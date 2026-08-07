@@ -27,20 +27,23 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY, {
 });
 
 async function main() {
-  console.log("🚀 Updating user roles in Supabase Database to 'employee'...");
+  console.log("🚀 Updating user roles in Supabase Database...");
 
-  // Update profiles role from 'staff' to 'employee'
-  const { data, error } = await supabase
+  // Update existing test users in profiles table directly
+  const { data: senderData } = await supabase
     .from("profiles")
     .update({ role: "employee" })
-    .eq("role", "staff")
+    .eq("email", "sender@kcst.co.th")
     .select();
 
-  if (error) {
-    console.error("Error updating profiles:", error.message);
-  } else {
-    console.log(`✅ Successfully updated ${data?.length || 0} user profiles to 'employee'`);
-  }
+  const { data: receiverData } = await supabase
+    .from("profiles")
+    .update({ role: "employee" })
+    .eq("email", "receiver@kcst.co.th")
+    .select();
+
+  console.log("Updated sender:", senderData);
+  console.log("Updated receiver:", receiverData);
 
   // Print current profiles
   const { data: allProfiles } = await supabase.from("profiles").select("email, full_name, role");
