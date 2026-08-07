@@ -26,10 +26,10 @@ const routes: RouteRecordRaw[] = [
         name: "home",
         component: () => import("@/features/home/pages/HomePage.vue"),
       },
-      // Delivery (Staff, Admin)
+      // Delivery (All roles: Employee, Manager, Admin)
       {
         path: "delivery",
-        meta: { roles: ["staff", "admin"] },
+        meta: { roles: ["employee", "manager", "admin"] },
         children: [
           {
             path: "",
@@ -51,10 +51,10 @@ const routes: RouteRecordRaw[] = [
           },
         ],
       },
-      // Receiving (Staff, Admin)
+      // Receiving (All roles: Employee, Manager, Admin)
       {
         path: "receiving",
-        meta: { roles: ["staff", "admin"] },
+        meta: { roles: ["employee", "manager", "admin"] },
         children: [
           {
             path: "",
@@ -70,11 +70,11 @@ const routes: RouteRecordRaw[] = [
           },
         ],
       },
-      // Reports (Manager, Admin)
+      // Reports (All roles: Employee, Manager, Admin)
       {
         path: "reports",
         name: "reports",
-        meta: { roles: ["manager", "admin"] },
+        meta: { roles: ["employee", "manager", "admin"] },
         component: () => import("@/features/reports/pages/ReportPage.vue"),
       },
       // Admin (Admin only)

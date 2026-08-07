@@ -9,15 +9,14 @@ import type { UserRole, SlipStatus, DepartmentType } from "./enums";
 
 export interface Profile {
   id: string;
-  full_name: string;
   email: string;
-  role: UserRole;
-  department_id: string | null;
+  full_name: string;
+  role: UserRole | "admin" | "manager" | "employee";
+  department_id?: string | null;
+  department?: Department | null;
   is_active: boolean;
   created_at: string;
   updated_at: string;
-  // joined
-  department?: Department;
 }
 
 /** Lightweight profile for dropdowns and lists */

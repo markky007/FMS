@@ -110,13 +110,13 @@ const form = ref<UserFormInput>({
   email: props.user?.email || "",
   password: "",
   full_name: props.user?.full_name || "",
-  role: props.user?.role || UserRole.STAFF,
+  role: (props.user?.role as UserRole) || UserRole.EMPLOYEE,
   department_id: props.user?.department_id || null,
   is_active: props.user?.is_active ?? true,
 });
 
 const roleOptions = [
-  { label: USER_ROLE_CONFIG[UserRole.STAFF].label, value: UserRole.STAFF },
+  { label: USER_ROLE_CONFIG[UserRole.EMPLOYEE].label, value: UserRole.EMPLOYEE },
   { label: USER_ROLE_CONFIG[UserRole.MANAGER].label, value: UserRole.MANAGER },
   { label: USER_ROLE_CONFIG[UserRole.ADMIN].label, value: UserRole.ADMIN },
 ];

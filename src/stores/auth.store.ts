@@ -27,12 +27,12 @@ const TEST_ACCOUNTS_MAP: Record<
   },
   "sender@kcst.co.th": {
     name: "ศศินันท์ พนักงานจัดส่ง (Sender K4)",
-    role: UserRole.STAFF,
+    role: UserRole.EMPLOYEE,
     deptCode: "K4",
   },
   "receiver@kcst.co.th": {
     name: "นภา พนักงานปลายทาง (Receiver K5)",
-    role: UserRole.STAFF,
+    role: UserRole.EMPLOYEE,
     deptCode: "K5",
   },
 };
@@ -53,7 +53,8 @@ export const useAuthStore = defineStore("auth", () => {
 
   const isAdmin = computed(() => role.value === UserRole.ADMIN);
   const isManager = computed(() => role.value === UserRole.MANAGER);
-  const isStaff = computed(() => role.value === UserRole.STAFF);
+  const isEmployee = computed(() => role.value === UserRole.EMPLOYEE);
+  const isStaff = computed(() => isEmployee.value);
   const isManagerOrAdmin = computed(() => isAdmin.value || isManager.value);
 
   // ─── Actions ────────────────────────────────────────────────────────────────
@@ -100,7 +101,7 @@ export const useAuthStore = defineStore("auth", () => {
         session.value?.user?.user_metadata?.full_name ||
         targetEmail.split("@")[0] ||
         "ผู้ใช้งาน",
-      role: testMeta?.role || UserRole.STAFF,
+      role: testMeta?.role || UserRole.EMPLOYEE,
       department_id: deptId,
       is_active: true,
     };

@@ -171,7 +171,7 @@ const departmentFilter = ref<string | null>(null);
 
 const roleFilterOptions = [
   { label: "ทั้งหมด", value: null },
-  { label: USER_ROLE_CONFIG[UserRole.STAFF].label, value: UserRole.STAFF },
+  { label: USER_ROLE_CONFIG[UserRole.EMPLOYEE].label, value: UserRole.EMPLOYEE },
   { label: USER_ROLE_CONFIG[UserRole.MANAGER].label, value: UserRole.MANAGER },
   { label: USER_ROLE_CONFIG[UserRole.ADMIN].label, value: UserRole.ADMIN },
 ];

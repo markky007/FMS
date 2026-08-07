@@ -6,7 +6,7 @@
 export enum UserRole {
   ADMIN = "admin",
   MANAGER = "manager",
-  STAFF = "staff",
+  EMPLOYEE = "employee",
 }
 
 export enum SlipStatus {
@@ -66,7 +66,7 @@ export const USER_ROLE_CONFIG: Record<
   UserRole,
   { label: string; color: string }
 > = {
-  [UserRole.ADMIN]: { label: "ผู้ดูแลระบบ", color: "purple" },
-  [UserRole.MANAGER]: { label: "ผู้จัดการ", color: "blue" },
-  [UserRole.STAFF]: { label: "พนักงาน", color: "teal" },
+  [UserRole.ADMIN]: { label: "ผู้ดูแลระบบ (Admin)", color: "purple" },
+  [UserRole.MANAGER]: { label: "ผู้จัดการ (Manager)", color: "orange" },
+  [UserRole.EMPLOYEE]: { label: "พนักงาน (Employee)", color: "blue" },
 };
