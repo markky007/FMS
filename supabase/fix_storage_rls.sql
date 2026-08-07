@@ -2,9 +2,6 @@
 -- Fix Storage.Objects RLS Policies for Attachments & Signatures Buckets
 -- ============================================================================
 
--- Enable RLS on storage.objects
-ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY;
-
 -- Drop existing storage.objects policies if any
 DROP POLICY IF EXISTS "attachments_public_select" ON storage.objects;
 DROP POLICY IF EXISTS "attachments_public_insert" ON storage.objects;
