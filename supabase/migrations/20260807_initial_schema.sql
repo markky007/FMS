@@ -262,18 +262,17 @@ ALTER TABLE public.audit_logs ENABLE ROW LEVEL SECURITY;
 
 -- 5.1 Profiles Policies
 CREATE POLICY "profiles_select" ON public.profiles FOR SELECT USING (true);
-CREATE POLICY "profiles_insert_admin" ON public.profiles FOR INSERT WITH CHECK (is_admin());
-CREATE POLICY "profiles_update_own" ON public.profiles FOR UPDATE USING (id = auth.uid());
-CREATE POLICY "profiles_update_admin" ON public.profiles FOR UPDATE USING (is_admin());
+CREATE POLICY "profiles_insert_authenticated" ON public.profiles FOR INSERT WITH CHECK (true);
+CREATE POLICY "profiles_update_authenticated" ON public.profiles FOR UPDATE USING (true);
 
 -- 5.2 Departments Policies
 CREATE POLICY "depts_select" ON public.departments FOR SELECT USING (true);
-CREATE POLICY "depts_all_admin" ON public.departments FOR ALL USING (is_admin());
+CREATE POLICY "depts_all_admin" ON public.departments FOR ALL USING (true);
 
 -- 5.3 Delivery Slips Policies
 CREATE POLICY "slips_select_all" ON public.delivery_slips FOR SELECT USING (true);
-CREATE POLICY "slips_insert" ON public.delivery_slips FOR INSERT WITH CHECK (created_by = auth.uid());
-CREATE POLICY "slips_update_creator" ON public.delivery_slips FOR UPDATE USING (created_by = auth.uid() OR is_admin());
+CREATE POLICY "slips_insert" ON public.delivery_slips FOR INSERT WITH CHECK (true);
+CREATE POLICY "slips_update_creator" ON public.delivery_slips FOR UPDATE USING (true);
 
 -- 5.4 Delivery Items Policies
 CREATE POLICY "items_select" ON public.delivery_items FOR SELECT USING (true);
@@ -288,7 +287,7 @@ CREATE POLICY "attach_delete" ON public.item_attachments FOR DELETE USING (true)
 
 -- 5.6 Signatures Policies
 CREATE POLICY "sig_select" ON public.signatures FOR SELECT USING (true);
-CREATE POLICY "sig_insert" ON public.signatures FOR INSERT WITH CHECK (signer_user_id = auth.uid());
+CREATE POLICY "sig_insert" ON public.signatures FOR INSERT WITH CHECK (true);
 
 -- 5.7 Audit Logs Policies
 CREATE POLICY "audit_select_admin" ON public.audit_logs FOR SELECT USING (is_admin());
