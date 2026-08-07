@@ -117,19 +117,42 @@ export function useUserManagement() {
   ): Promise<boolean> {
     isSaving.value = true;
     try {
-      const payload: Record<string, unknown> = {};
-      if (input.full_name) payload.full_name = input.full_name.trim();
-      if (input.role) payload.role = input.role;
-      if (input.department_id !== undefined)
-        payload.department_id = input.department_id || null;
-      if (input.is_active !== undefined) payload.is_active = input.is_active;
+      // 1. Attempt call to Edge Function 'admin-update-user'
+      const { data: fnData, error: fnError } = await supabase.functions.invoke(
+        "admin-update-user",
+        {
+          body: {
+            userId,
+            email: input.email?.trim(),
+            password: input.password || undefined,
+            full_name: input.full_name?.trim(),
+            role: input.role,
+            department_id:
+              input.department_id !== undefined
+                ? input.department_id || null
+                : undefined,
+            is_active: input.is_active
+          }
+        }
+      );
 
-      const { error } = await supabase
-        .from("profiles")
-        .update(payload)
-        .eq("id", userId);
+      if (fnError || (fnData && fnData.error)) {
+        // Fallback: Direct table update on `profiles` if Edge Function fails or is not deployed
+        const payload: Record<string, unknown> = {};
+        if (input.email) payload.email = input.email.trim();
+        if (input.full_name) payload.full_name = input.full_name.trim();
+        if (input.role) payload.role = input.role;
+        if (input.department_id !== undefined)
+          payload.department_id = input.department_id || null;
+        if (input.is_active !== undefined) payload.is_active = input.is_active;
 
-      if (error) throw new Error(error.message);
+        const { error: dbError } = await supabase
+          .from("profiles")
+          .update(payload)
+          .eq("id", userId);
+
+        if (dbError) throw new Error(dbError.message);
+      }
 
       notify.success("บันทึกข้อมูลผู้ใช้สำเร็จ");
       await fetchAllUsers();

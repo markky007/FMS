@@ -26,23 +26,39 @@
             type="email"
             outlined
             dense
-            :disabled="isEdit"
             :rules="[val => !!val || 'กรุณากรอกอีเมล']"
           />
 
           <q-input
-            v-if="!isEdit"
             v-model="form.password"
-            label="รหัสผ่านเริ่มต้น (Password)"
+            :label="
+              isEdit
+                ? 'รหัสผ่านใหม่ (New Password)'
+                : 'รหัสผ่านเริ่มต้น (Password)'
+            "
             type="password"
             outlined
             dense
-            hint="ขั้นต่ำ 8 ตัวอักษร"
-            :rules="[
-              val => !!val || 'กรุณากรอกรหัสผ่าน',
-              val =>
-                (val && val.length >= 8) || 'รหัสผ่านต้องอย่างน้อย 8 ตัวอักษร'
-            ]"
+            :hint="
+              isEdit
+                ? 'เว้นว่างไว้หากไม่ต้องการเปลี่ยนรหัสผ่าน'
+                : 'ขั้นต่ำ 8 ตัวอักษร'
+            "
+            :rules="
+              isEdit
+                ? [
+                    val =>
+                      !val ||
+                      val.length >= 8 ||
+                      'รหัสผ่านต้องอย่างน้อย 8 ตัวอักษร'
+                  ]
+                : [
+                    val => !!val || 'กรุณากรอกรหัสผ่าน',
+                    val =>
+                      (val && val.length >= 8) ||
+                      'รหัสผ่านต้องอย่างน้อย 8 ตัวอักษร'
+                  ]
+            "
           />
 
           <q-select
