@@ -56,6 +56,7 @@ import { onMounted } from "vue";
 import { useQuasar } from "quasar";
 import { useAuthStore } from "@/stores/auth.store";
 import { useReceiving } from "../composables/useReceiving";
+import { useRealtimeSubscription } from "@/shared/composables/useRealtimeSubscription";
 import PendingListView from "../components/PendingListView.vue";
 import SignatureDialog from "../components/SignatureDialog.vue";
 import EmptyState from "@/shared/components/EmptyState.vue";
@@ -65,6 +66,12 @@ const $q = useQuasar();
 const authStore = useAuthStore();
 const { pendingItems, isLoading, fetchPendingItems, signItem, batchSignItems } =
   useReceiving();
+
+useRealtimeSubscription({
+  onItemChange: () => {
+    void fetchPendingItems();
+  },
+});
 
 function openSignSingle(item: DeliveryItem) {
   $q.dialog({

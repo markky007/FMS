@@ -110,6 +110,7 @@ import { ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useDeliverySlipStore } from "@/stores/delivery-slip.store";
 import { useDepartmentStore } from "@/stores/department.store";
+import { useRealtimeSubscription } from "@/shared/composables/useRealtimeSubscription";
 import SlipListView from "../components/SlipListView.vue";
 import EmptyState from "@/shared/components/EmptyState.vue";
 import { SlipStatus, SLIP_STATUS_CONFIG } from "@/types/enums";
@@ -118,6 +119,12 @@ import type { DeliverySlip, SlipFilters } from "@/types/models";
 const router = useRouter();
 const slipStore = useDeliverySlipStore();
 const departmentStore = useDepartmentStore();
+
+useRealtimeSubscription({
+  onSlipChange: () => {
+    void onFilterChange();
+  },
+});
 
 const filters = ref({
   status: undefined as SlipStatus | undefined,

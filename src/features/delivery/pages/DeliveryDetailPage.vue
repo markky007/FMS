@@ -37,12 +37,22 @@
 import { onMounted, onUnmounted } from "vue";
 import { useRoute } from "vue-router";
 import { useDeliverySlipStore } from "@/stores/delivery-slip.store";
+import { useRealtimeSubscription } from "@/shared/composables/useRealtimeSubscription";
 import SlipDetail from "../components/SlipDetail.vue";
 import LoadingState from "@/shared/components/LoadingState.vue";
 import ErrorState from "@/shared/components/ErrorState.vue";
 
 const route = useRoute();
 const slipStore = useDeliverySlipStore();
+
+useRealtimeSubscription({
+  onSlipChange: () => {
+    void loadData();
+  },
+  onItemChange: () => {
+    void loadData();
+  },
+});
 
 async function loadData() {
   const slipId = route.params.id as string;

@@ -146,6 +146,7 @@
 import { computed, onMounted } from "vue";
 import { useAuthStore } from "@/stores/auth.store";
 import { useDashboard } from "@/features/dashboard/composables/useDashboard";
+import { useRealtimeSubscription } from "@/shared/composables/useRealtimeSubscription";
 import StatCard from "@/features/dashboard/components/StatCard.vue";
 import DepartmentBreakdownCard from "@/features/dashboard/components/DepartmentBreakdownCard.vue";
 import SlipListView from "@/features/delivery/components/SlipListView.vue";
@@ -156,6 +157,15 @@ import type { DeliverySlip } from "@/types/models";
 const authStore = useAuthStore();
 const { stats, departmentBreakdown, recentSlips, isLoading, refreshDashboard } =
   useDashboard();
+
+useRealtimeSubscription({
+  onSlipChange: () => {
+    void refreshDashboard();
+  },
+  onItemChange: () => {
+    void refreshDashboard();
+  },
+});
 
 const roleConfig = computed(() => {
   if (!authStore.role) return { label: "", color: "grey" };
