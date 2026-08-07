@@ -1,6 +1,6 @@
 /**
  * Auth Pinia Store
- * Manages authentication state, session, user profile, and resilient login fallback
+ * Manages authentication state, session, and user profile
  */
 
 import { defineStore } from "pinia";
@@ -10,7 +10,7 @@ import { supabase } from "@/boot/supabase";
 import { UserRole } from "@/types/enums";
 import type { Profile } from "@/types/models";
 
-/** Pre-configured test accounts for instant seamless login */
+/** Pre-configured test accounts mapping for initial profile seeding */
 const TEST_ACCOUNTS_MAP: Record<
   string,
   { name: string; role: UserRole; deptCode: string }
@@ -78,7 +78,7 @@ export const useAuthStore = defineStore("auth", () => {
       return data as Profile;
     }
 
-    // Auto-create profile if not existing in profiles table yet
+    // Auto-create profile row if user authenticated but missing in profiles table
     const targetEmail = emailHint || session.value?.user?.email || "";
     const testMeta = TEST_ACCOUNTS_MAP[targetEmail.toLowerCase()];
 
@@ -119,7 +119,7 @@ export const useAuthStore = defineStore("auth", () => {
     return insertedData as Profile;
   }
 
-  /** Login with email and password (with auto-provisioning fallback for test accounts) */
+  /** Standard login with email and password */
   async function login(email: string, password: string): Promise<void> {
     isLoading.value = true;
     error.value = null;
@@ -127,75 +127,28 @@ export const useAuthStore = defineStore("auth", () => {
     const cleanEmail = email.trim().toLowerCase();
 
     try {
-      // 1. Attempt standard Supabase Auth signInWithPassword
       const { data: authData, error: authError } =
         await supabase.auth.signInWithPassword({
           email: cleanEmail,
           password,
         });
 
-      if (!authError && authData.session) {
-        session.value = authData.session;
-        await loadProfile(authData.user.id, cleanEmail);
-        return;
-      }
-
-      // 2. Fallback: If signInWithPassword fails (500 or 400 from raw SQL accounts), attempt signUp for test accounts
-      const { data: signUpData, error: signUpError } =
-        await supabase.auth.signUp({
-          email: cleanEmail,
-          password,
-          options: {
-            data: {
-              full_name:
-                TEST_ACCOUNTS_MAP[cleanEmail]?.name || cleanEmail.split("@")[0],
-            },
-          },
-        });
-
-      if (signUpError) {
+      if (authError) {
         if (
-          authError?.message?.includes("Invalid login credentials") ||
-          signUpError.message?.includes("User already registered") ||
-          signUpError.message?.includes("Invalid login credentials")
+          authError.message.includes("Invalid login credentials") ||
+          authError.status === 400
         ) {
-          throw new Error("อีเมลหรือรหัสผ่านไม่ถูกต้อง (หากยังไม่มีบัญชี กรุณาสร้างบัญชีผ่าน Supabase Auth)");
-        }
-        if (
-          authError?.message?.includes("Database error") ||
-          signUpError.message?.includes("Database error")
-        ) {
-          throw new Error("เกิดข้อผิดพลาดในการเชื่อมต่อฐานข้อมูล Supabase Auth กรุณารันสคริปต์ fix_auth_schema.sql ใน SQL Editor");
-        }
-        throw new Error(signUpError.message || authError?.message || "เข้าสู่ระบบไม่สำเร็จ");
-      }
-
-      if (signUpData.session && signUpData.user) {
-        session.value = signUpData.session;
-        await loadProfile(signUpData.user.id, cleanEmail);
-        return;
-      }
-
-      if (signUpData.user) {
-        // Retry sign in after signup
-        const { data: retryData, error: retryError } =
-          await supabase.auth.signInWithPassword({
-            email: cleanEmail,
-            password,
-          });
-
-        if (retryError || !retryData.session) {
           throw new Error(
-            "ลงทะเบียนสำเร็จแล้ว กรุณายืนยันตัวตน หรือลองเข้าสู่ระบบอีกครั้ง",
+            "อีเมลหรือรหัสผ่านไม่ถูกต้อง (กรุณาตรวจสอบบัญชีผู้ใช้ใน Supabase Auth)",
           );
         }
-
-        if (signUpData.user?.id) {
-          await loadProfile(signUpData.user.id, cleanEmail);
-        }
+        throw new Error(authError.message);
       }
 
-      throw new Error("เกิดข้อผิดพลาดในการเข้าสู่ระบบ");
+      if (authData.session && authData.user) {
+        session.value = authData.session;
+        await loadProfile(authData.user.id, cleanEmail);
+      }
     } catch (err) {
       const message =
         err instanceof Error ? err.message : "เกิดข้อผิดพลาดในการเข้าสู่ระบบ";
@@ -206,7 +159,7 @@ export const useAuthStore = defineStore("auth", () => {
     }
   }
 
-  /** Logout and clear all state */
+  /** Logout and clear state */
   async function logout(): Promise<void> {
     await supabase.auth.signOut();
     session.value = null;
@@ -214,7 +167,7 @@ export const useAuthStore = defineStore("auth", () => {
     error.value = null;
   }
 
-  /** Restore session from persisted storage (called on app boot) */
+  /** Restore session on app boot */
   async function restoreSession(): Promise<boolean> {
     isLoading.value = true;
     try {
@@ -237,14 +190,14 @@ export const useAuthStore = defineStore("auth", () => {
     }
   }
 
-  /** Refresh profile data from database */
+  /** Refresh profile data */
   async function refreshProfile(): Promise<void> {
     if (userId.value) {
       await loadProfile(userId.value);
     }
   }
 
-  /** Listen for auth state changes (token refresh, etc.) */
+  /** Listen for auth state changes */
   function setupAuthListener(): void {
     supabase.auth.onAuthStateChange(async (event, newSession) => {
       session.value = newSession;
