@@ -14,6 +14,13 @@
           <!-- Actions -->
           <div class="row q-gutter-xs">
             <q-btn
+              color="primary"
+              icon="print"
+              label="พิมพ์ / Export PDF"
+              unelevated
+              @click="handlePrintSlip"
+            />
+            <q-btn
               v-if="slip.status === SlipStatus.DRAFT"
               color="positive"
               icon="send"
@@ -82,8 +89,10 @@
 </template>
 
 <script setup lang="ts">
+import { useQuasar } from "quasar";
 import StatusChip from "@/shared/components/StatusChip.vue";
 import ItemList from "./ItemList.vue";
+import ExportDialog from "@/features/reports/components/ExportDialog.vue";
 import { useAuthStore } from "@/stores/auth.store";
 import { useDeliverySlip } from "../composables/useDeliverySlip";
 import { SlipStatus } from "@/types/enums";
@@ -100,6 +109,7 @@ const emit = defineEmits<{
 
 const authStore = useAuthStore();
 const { sendSlip, voidSlip, isSubmitting } = useDeliverySlip();
+const $q = useQuasar();
 
 function formatDate(dateStr: string): string {
   if (!dateStr) return "";
@@ -107,6 +117,16 @@ function formatDate(dateStr: string): string {
     day: "numeric",
     month: "long",
     year: "numeric",
+  });
+}
+
+function handlePrintSlip() {
+  $q.dialog({
+    component: ExportDialog,
+    componentProps: {
+      slip: props.slip,
+      items: props.items,
+    },
   });
 }
 
