@@ -1,7 +1,9 @@
 <template>
   <q-card flat bordered class="bg-white">
     <q-card-section>
-      <div class="text-subtitle1 text-weight-bold text-primary row items-center justify-between">
+      <div
+        class="text-subtitle1 text-weight-bold text-primary row items-center justify-between"
+      >
         <div class="row items-center">
           <q-icon name="pie_chart" class="q-mr-xs" size="22px" />
           สัดส่วนการส่งเอกสารแยกตามสาขา (ต้นทาง)
@@ -51,7 +53,7 @@ const props = defineProps<{
 }>();
 
 const totalCount = computed(() =>
-  props.breakdown.reduce((sum, item) => sum + item.count, 0),
+  props.breakdown.reduce((sum, item) => sum + item.count, 0)
 );
 
 function getPercentage(count: number): number {

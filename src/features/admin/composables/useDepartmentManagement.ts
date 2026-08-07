@@ -40,8 +40,7 @@ export function useDepartmentManagement() {
       if (error) throw new Error(error.message);
       allDepartments.value = data as Department[];
     } catch (err) {
-      const msg =
-        err instanceof Error ? err.message : "ไม่สามารถโหลดข้อมูลแผนกได้";
+      const msg = err instanceof Error ? err.message : "ไม่สามารถโหลดข้อมูลแผนกได้";
       notify.error(msg);
     } finally {
       isLoading.value = false;
@@ -49,7 +48,9 @@ export function useDepartmentManagement() {
   }
 
   /** Create new department */
-  async function createDepartment(input: DepartmentFormInput): Promise<boolean> {
+  async function createDepartment(
+    input: DepartmentFormInput
+  ): Promise<boolean> {
     isSaving.value = true;
     try {
       const payload = {
@@ -58,7 +59,7 @@ export function useDepartmentManagement() {
         type: input.type,
         parent_id: input.parent_id || null,
         sort_order: input.sort_order ?? 0,
-        is_active: input.is_active ?? true,
+        is_active: input.is_active ?? true
       };
 
       const { error } = await supabase.from("departments").insert(payload);
@@ -85,7 +86,7 @@ export function useDepartmentManagement() {
   /** Update existing department */
   async function updateDepartment(
     id: string,
-    input: Partial<DepartmentFormInput>,
+    input: Partial<DepartmentFormInput>
   ): Promise<boolean> {
     isSaving.value = true;
     try {
@@ -93,7 +94,8 @@ export function useDepartmentManagement() {
       if (input.code) payload.code = input.code.toUpperCase().trim();
       if (input.name) payload.name = input.name.trim();
       if (input.type) payload.type = input.type;
-      if (input.parent_id !== undefined) payload.parent_id = input.parent_id || null;
+      if (input.parent_id !== undefined)
+        payload.parent_id = input.parent_id || null;
       if (input.sort_order !== undefined) payload.sort_order = input.sort_order;
       if (input.is_active !== undefined) payload.is_active = input.is_active;
 
@@ -123,7 +125,7 @@ export function useDepartmentManagement() {
     const success = await updateDepartment(dept.id, { is_active: newStatus });
     if (success) {
       notify.info(
-        `${newStatus ? "เปิดใช้งาน" : "ปิดใช้งาน"} ${dept.name} เรียบร้อยแล้ว`,
+        `${newStatus ? "เปิดใช้งาน" : "ปิดใช้งาน"} ${dept.name} เรียบร้อยแล้ว`
       );
     }
   }
@@ -135,6 +137,6 @@ export function useDepartmentManagement() {
     fetchAllDepartments,
     createDepartment,
     updateDepartment,
-    toggleStatus,
+    toggleStatus
   };
 }

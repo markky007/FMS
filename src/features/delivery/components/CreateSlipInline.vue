@@ -3,7 +3,9 @@
     <!-- Header Section Card -->
     <q-card flat bordered class="bg-white">
       <q-card-section>
-        <div class="text-subtitle1 text-weight-bold text-primary q-mb-md row items-center">
+        <div
+          class="text-subtitle1 text-weight-bold text-primary q-mb-md row items-center"
+        >
           <q-icon name="description" class="q-mr-xs" size="24px" />
           สร้างใบส่งเอกสาร (Cover List of Document Delivery)
         </div>
@@ -84,11 +86,7 @@
           <div class="text-subtitle2 text-weight-bold q-mb-sm">
             รายการเอกสารทั้งหมดในใบส่งนี้ ({{ items.length }} รายการ)
           </div>
-          <ItemList
-            :items="items"
-            editable
-            @delete-item="handleDeleteItem"
-          />
+          <ItemList :items="items" editable @delete-item="handleDeleteItem" />
         </q-card-section>
 
         <q-card-actions align="right" class="q-pa-md bg-grey-1">
@@ -138,21 +136,21 @@ const headerForm = ref({
   to_department_id: "",
   delivered_by_name: authStore.fullName || "",
   send_date: new Date().toISOString().split("T")[0] || "",
-  send_time: new Date().toTimeString().split(" ")[0]?.substring(0, 5) || "",
+  send_time: new Date().toTimeString().split(" ")[0]?.substring(0, 5) || ""
 });
 
 const departmentOptions = computed(() =>
-  departmentStore.departments.map((d) => ({
+  departmentStore.departments.map(d => ({
     label: `${d.code} - ${d.name}`,
-    value: d.id,
-  })),
+    value: d.id
+  }))
 );
 
 const canCreateHeader = computed(
   () =>
     !!headerForm.value.from_department_id &&
     !!headerForm.value.to_department_id &&
-    headerForm.value.from_department_id !== headerForm.value.to_department_id,
+    headerForm.value.from_department_id !== headerForm.value.to_department_id
 );
 
 async function initSlipHeader() {
@@ -161,7 +159,7 @@ async function initSlipHeader() {
     to_department_id: headerForm.value.to_department_id,
     delivered_by_name: headerForm.value.delivered_by_name,
     send_date: headerForm.value.send_date,
-    send_time: headerForm.value.send_time,
+    send_time: headerForm.value.send_time
   });
   if (id) {
     activeSlipId.value = id;
@@ -188,9 +186,9 @@ async function handleAddItem(payload: {
       receiver_user_id: payload.receiver_user_id,
       sender_name: payload.sender_name,
       sender_user_id: payload.sender_user_id,
-      quantity: payload.quantity,
+      quantity: payload.quantity
     },
-    payload.files,
+    payload.files
   );
 
   if (newItem) {
@@ -201,7 +199,7 @@ async function handleAddItem(payload: {
 async function handleDeleteItem(item: DeliveryItem) {
   const success = await deleteItem(item);
   if (success) {
-    items.value = items.value.filter((i) => i.id !== item.id);
+    items.value = items.value.filter(i => i.id !== item.id);
   }
 }
 

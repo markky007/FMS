@@ -8,7 +8,11 @@ import { supabase } from "@/boot/supabase";
 import { useStorage } from "@/shared/composables/useStorage";
 import { useNotification } from "@/shared/composables/useNotification";
 import { APP_CONFIG } from "@/app.config";
-import type { DeliveryItem, DeliveryItemCreateInput, ItemAttachment } from "@/types/models";
+import type {
+  DeliveryItem,
+  DeliveryItemCreateInput,
+  ItemAttachment
+} from "@/types/models";
 
 export function useDeliveryItems() {
   const { uploadFile, deleteFile } = useStorage();
@@ -18,7 +22,7 @@ export function useDeliveryItems() {
   /** Add item to slip */
   async function addItem(
     input: DeliveryItemCreateInput,
-    attachments: File[] = [],
+    attachments: File[] = []
   ): Promise<DeliveryItem | null> {
     isItemLoading.value = true;
     try {
@@ -30,7 +34,7 @@ export function useDeliveryItems() {
         sender_name: input.sender_name.trim(),
         sender_user_id: input.sender_user_id || null,
         document_description: input.document_description.trim(),
-        quantity: input.quantity ?? 1,
+        quantity: input.quantity ?? 1
       };
 
       const { data, error } = await supabase
@@ -45,7 +49,11 @@ export function useDeliveryItems() {
 
       // Handle attachments upload if any
       if (attachments.length > 0) {
-        const uploaded = await uploadItemAttachments(createdItem.id, input.delivery_slip_id, attachments);
+        const uploaded = await uploadItemAttachments(
+          createdItem.id,
+          input.delivery_slip_id,
+          attachments
+        );
         createdItem.attachments = uploaded;
       } else {
         createdItem.attachments = [];
@@ -53,7 +61,8 @@ export function useDeliveryItems() {
 
       return createdItem;
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "ไม่สามารถเพิ่มรายการเอกสารได้";
+      const msg =
+        err instanceof Error ? err.message : "ไม่สามารถเพิ่มรายการเอกสารได้";
       notify.error(msg);
       return null;
     } finally {
@@ -65,7 +74,7 @@ export function useDeliveryItems() {
   async function uploadItemAttachments(
     itemId: string,
     slipId: string,
-    files: File[],
+    files: File[]
   ): Promise<ItemAttachment[]> {
     const validFiles = files.slice(0, APP_CONFIG.MAX_ATTACHMENTS_PER_ITEM);
     const savedRecords: ItemAttachment[] = [];
@@ -82,7 +91,7 @@ export function useDeliveryItems() {
       const uploadedPath = await uploadFile(
         APP_CONFIG.STORAGE_BUCKETS.ATTACHMENTS,
         storagePath,
-        file,
+        file
       );
 
       if (uploadedPath) {
@@ -93,13 +102,15 @@ export function useDeliveryItems() {
             storage_path: uploadedPath,
             file_name: file.name,
             file_size: file.size,
-            mime_type: file.type || "application/octet-stream",
+            mime_type: file.type || "application/octet-stream"
           })
           .select()
           .single();
 
         if (attErr) {
-          notify.error(`บันทึกไฟล์แนบ ${file.name} ลงฐานข้อมูลล้มเหลว: ${attErr.message}`);
+          notify.error(
+            `บันทึกไฟล์แนบ ${file.name} ลงฐานข้อมูลล้มเหลว: ${attErr.message}`
+          );
         } else if (attData) {
           savedRecords.push(attData as ItemAttachment);
         }
@@ -116,7 +127,10 @@ export function useDeliveryItems() {
       // Delete attachments from storage if any
       if (item.attachments && item.attachments.length > 0) {
         for (const att of item.attachments) {
-          await deleteFile(APP_CONFIG.STORAGE_BUCKETS.ATTACHMENTS, att.storage_path);
+          await deleteFile(
+            APP_CONFIG.STORAGE_BUCKETS.ATTACHMENTS,
+            att.storage_path
+          );
         }
       }
 
@@ -142,6 +156,6 @@ export function useDeliveryItems() {
     isItemLoading,
     addItem,
     uploadItemAttachments,
-    deleteItem,
+    deleteItem
   };
 }

@@ -6,7 +6,7 @@
 export enum UserRole {
   ADMIN = "admin",
   MANAGER = "manager",
-  EMPLOYEE = "employee",
+  EMPLOYEE = "employee"
 }
 
 export enum SlipStatus {
@@ -14,12 +14,12 @@ export enum SlipStatus {
   SENT = "sent",
   PARTIALLY_RECEIVED = "partially_received",
   FULLY_RECEIVED = "fully_received",
-  VOIDED = "voided",
+  VOIDED = "voided"
 }
 
 export enum DepartmentType {
   BRANCH = "branch",
-  DEPARTMENT = "department",
+  DEPARTMENT = "department"
 }
 
 export enum AuditAction {
@@ -27,7 +27,7 @@ export enum AuditAction {
   UPDATE = "update",
   DELETE = "delete",
   SIGN = "sign",
-  VOID = "void",
+  VOID = "void"
 }
 
 /** Status display configuration */
@@ -38,28 +38,28 @@ export const SLIP_STATUS_CONFIG: Record<
   [SlipStatus.DRAFT]: {
     label: "แบบร่าง",
     color: "grey",
-    icon: "edit_note",
+    icon: "edit_note"
   },
   [SlipStatus.SENT]: {
     label: "ส่งแล้ว",
     color: "blue",
-    icon: "send",
+    icon: "send"
   },
   [SlipStatus.PARTIALLY_RECEIVED]: {
     label: "รับบางส่วน",
     color: "orange",
-    icon: "hourglass_top",
+    icon: "hourglass_top"
   },
   [SlipStatus.FULLY_RECEIVED]: {
     label: "รับครบแล้ว",
     color: "green",
-    icon: "check_circle",
+    icon: "check_circle"
   },
   [SlipStatus.VOIDED]: {
     label: "ยกเลิก",
     color: "red",
-    icon: "cancel",
-  },
+    icon: "cancel"
+  }
 };
 
 export const USER_ROLE_CONFIG: Record<
@@ -68,5 +68,5 @@ export const USER_ROLE_CONFIG: Record<
 > = {
   [UserRole.ADMIN]: { label: "ผู้ดูแลระบบ (Admin)", color: "purple" },
   [UserRole.MANAGER]: { label: "ผู้จัดการ (Manager)", color: "orange" },
-  [UserRole.EMPLOYEE]: { label: "พนักงาน (Employee)", color: "blue" },
+  [UserRole.EMPLOYEE]: { label: "พนักงาน (Employee)", color: "blue" }
 };

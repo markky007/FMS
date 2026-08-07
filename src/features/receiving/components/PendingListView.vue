@@ -3,14 +3,10 @@
     v-if="$q.screen.gt.sm"
     :items="items"
     :loading="loading"
-    @sign="(item) => $emit('sign', item)"
-    @batch-sign="(items) => $emit('batch-sign', items)"
+    @sign="item => $emit('sign', item)"
+    @batch-sign="items => $emit('batch-sign', items)"
   />
-  <PendingCardList
-    v-else
-    :items="items"
-    @sign="(item) => $emit('sign', item)"
-  />
+  <PendingCardList v-else :items="items" @sign="item => $emit('sign', item)" />
 </template>
 
 <script setup lang="ts">

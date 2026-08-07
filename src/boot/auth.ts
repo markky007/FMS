@@ -16,9 +16,9 @@ export default defineBoot(async ({ router }) => {
   authStore.setupAuthListener();
 
   // Navigation guard: redirect to login if not authenticated (Vue Router 5 return value syntax)
-  router.beforeEach((to) => {
+  router.beforeEach(to => {
     const requiresAuth = to.matched.some(
-      (record) => record.meta.requiresAuth !== false,
+      record => record.meta.requiresAuth !== false
     );
     const allowedRoles = to.meta.roles as string[] | undefined;
 

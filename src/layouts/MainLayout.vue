@@ -20,7 +20,7 @@ onMounted(async () => {
   await Promise.allSettled([
     departmentStore.fetchAll(),
     userDirectoryStore.fetchAll(),
-    notificationStore.fetchPendingCount(),
+    notificationStore.fetchPendingCount()
   ]);
 
   notificationStore.subscribeToPending();

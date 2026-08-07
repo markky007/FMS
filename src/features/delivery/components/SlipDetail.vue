@@ -42,7 +42,9 @@
 
         <!-- Excel-like Header Info Grid -->
         <div class="q-pa-md bg-grey-1 rounded-borders border-grey">
-          <div class="text-subtitle1 text-weight-bold text-center q-mb-sm text-primary">
+          <div
+            class="text-subtitle1 text-weight-bold text-center q-mb-sm text-primary"
+          >
             KCST : COVER LIST OF DOCUMENT & ETC. DELIVERY
           </div>
 
@@ -50,7 +52,8 @@
             <div class="col-12 col-sm-3">
               <span class="text-grey-7">From (ต้นทาง):</span>
               <div class="text-weight-bold">
-                {{ slip.from_department?.code }} - {{ slip.from_department?.name }}
+                {{ slip.from_department?.code }} -
+                {{ slip.from_department?.name }}
               </div>
             </div>
             <div class="col-12 col-sm-3">
@@ -116,7 +119,7 @@ function formatDate(dateStr: string): string {
   return new Date(dateStr).toLocaleDateString("th-TH", {
     day: "numeric",
     month: "long",
-    year: "numeric",
+    year: "numeric"
   });
 }
 
@@ -125,8 +128,8 @@ function handlePrintSlip() {
     component: ExportDialog,
     componentProps: {
       slip: props.slip,
-      items: props.items,
-    },
+      items: props.items
+    }
   });
 }
 

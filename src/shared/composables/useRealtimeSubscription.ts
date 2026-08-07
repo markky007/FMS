@@ -30,7 +30,7 @@ export function useRealtimeSubscription(options: RealtimeOptions = {}) {
         { event: "*", schema: "public", table: "delivery_slips" },
         () => {
           options.onSlipChange?.();
-        },
+        }
       )
       // Listen to delivery_items changes (item added, item signed)
       .on(
@@ -40,7 +40,7 @@ export function useRealtimeSubscription(options: RealtimeOptions = {}) {
           options.onItemChange?.();
           options.onSlipChange?.();
           void notificationStore.fetchPendingCount();
-        },
+        }
       )
       // Listen to signatures changes (new signature uploaded)
       .on(
@@ -49,7 +49,7 @@ export function useRealtimeSubscription(options: RealtimeOptions = {}) {
         () => {
           options.onItemChange?.();
           options.onSlipChange?.();
-        },
+        }
       )
       .subscribe();
   }
@@ -71,6 +71,6 @@ export function useRealtimeSubscription(options: RealtimeOptions = {}) {
 
   return {
     subscribe,
-    unsubscribe,
+    unsubscribe
   };
 }

@@ -22,9 +22,18 @@
           fit="cover"
         />
         <!-- Document File Icon Badge -->
-        <div v-else class="column items-center justify-center text-center q-pa-xs">
-          <q-icon :name="getFileIcon(f)" :color="getFileIconColor(f)" size="28px" />
-          <div class="text-caption text-weight-bold ellipsis full-width text-center style-name">
+        <div
+          v-else
+          class="column items-center justify-center text-center q-pa-xs"
+        >
+          <q-icon
+            :name="getFileIcon(f)"
+            :color="getFileIconColor(f)"
+            size="28px"
+          />
+          <div
+            class="text-caption text-weight-bold ellipsis full-width text-center style-name"
+          >
             {{ getExtLabel(f) }}
           </div>
         </div>
@@ -57,7 +66,11 @@
       </template>
       <template #default>
         <span class="text-caption text-grey-7">
-          {{ files.length === 0 ? "ถ่ายรูปหรือเลือกไฟล์เอกสาร (PDF, Word, Excel, CSV)" : "+ เพิ่มไฟล์อีก" }}
+          {{
+            files.length === 0
+              ? "ถ่ายรูปหรือเลือกไฟล์เอกสาร (PDF, Word, Excel, CSV)"
+              : "+ เพิ่มไฟล์อีก"
+          }}
         </span>
       </template>
     </q-file>
@@ -73,8 +86,8 @@ const props = withDefaults(
     maxFiles?: number;
   }>(),
   {
-    maxFiles: 3,
-  },
+    maxFiles: 3
+  }
 );
 
 const emit = defineEmits<{

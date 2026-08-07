@@ -42,7 +42,12 @@
         <span class="text-weight-medium">
           {{ props.row.delivery_slip?.from_department?.code }}
         </span>
-        <q-icon name="arrow_forward" size="14px" color="grey-6" class="q-mx-xs" />
+        <q-icon
+          name="arrow_forward"
+          size="14px"
+          color="grey-6"
+          class="q-mx-xs"
+        />
         <span class="text-weight-medium">
           {{ props.row.delivery_slip?.to_department?.code }}
         </span>
@@ -83,8 +88,8 @@ withDefaults(
   }>(),
   {
     loading: false,
-    selectable: true,
-  },
+    selectable: true
+  }
 );
 
 const emit = defineEmits<{
@@ -99,13 +104,58 @@ function onSelectionChanged(val: readonly DeliveryItem[]) {
 }
 
 const columns = [
-  { name: "document_description", label: "รายการเอกสาร (document description)", field: "document_description", sortable: true, align: "left" as const },
-  { name: "slip_number", label: "เลขที่ใบส่ง", field: (r: DeliveryItem) => r.delivery_slip?.slip_number || "-", sortable: true, align: "left" as const },
-  { name: "route", label: "เส้นทาง (จาก → ถึง)", field: "route", align: "left" as const },
-  { name: "receiver_name", label: "ผู้รับ", field: "receiver_name", sortable: true, align: "left" as const },
-  { name: "sender_name", label: "ผู้ส่ง", field: "sender_name", sortable: true, align: "left" as const },
-  { name: "quantity", label: "จำนวน", field: "quantity", sortable: true, align: "center" as const },
-  { name: "attachments", label: "รูปแนบ", field: "attachments", align: "center" as const },
-  { name: "actions", label: "เซ็นรับ", field: "actions", align: "right" as const },
+  {
+    name: "document_description",
+    label: "รายการเอกสาร (document description)",
+    field: "document_description",
+    sortable: true,
+    align: "left" as const
+  },
+  {
+    name: "slip_number",
+    label: "เลขที่ใบส่ง",
+    field: (r: DeliveryItem) => r.delivery_slip?.slip_number || "-",
+    sortable: true,
+    align: "left" as const
+  },
+  {
+    name: "route",
+    label: "เส้นทาง (จาก → ถึง)",
+    field: "route",
+    align: "left" as const
+  },
+  {
+    name: "receiver_name",
+    label: "ผู้รับ",
+    field: "receiver_name",
+    sortable: true,
+    align: "left" as const
+  },
+  {
+    name: "sender_name",
+    label: "ผู้ส่ง",
+    field: "sender_name",
+    sortable: true,
+    align: "left" as const
+  },
+  {
+    name: "quantity",
+    label: "จำนวน",
+    field: "quantity",
+    sortable: true,
+    align: "center" as const
+  },
+  {
+    name: "attachments",
+    label: "รูปแนบ",
+    field: "attachments",
+    align: "center" as const
+  },
+  {
+    name: "actions",
+    label: "เซ็นรับ",
+    field: "actions",
+    align: "right" as const
+  }
 ];
 </script>

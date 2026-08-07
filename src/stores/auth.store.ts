@@ -18,23 +18,23 @@ const TEST_ACCOUNTS_MAP: Record<
   "admin@kcst.co.th": {
     name: "สมชาย ผู้ดูแลระบบ (Admin)",
     role: UserRole.ADMIN,
-    deptCode: "K1",
+    deptCode: "K1"
   },
   "manager@kcst.co.th": {
     name: "วิชัย ผู้จัดการสาขา (Manager)",
     role: UserRole.MANAGER,
-    deptCode: "K4",
+    deptCode: "K4"
   },
   "sender@kcst.co.th": {
     name: "ศศินันท์ พนักงานจัดส่ง (Sender K4)",
     role: UserRole.EMPLOYEE,
-    deptCode: "K4",
+    deptCode: "K4"
   },
   "receiver@kcst.co.th": {
     name: "นภา พนักงานปลายทาง (Receiver K5)",
     role: UserRole.EMPLOYEE,
-    deptCode: "K5",
-  },
+    deptCode: "K5"
+  }
 };
 
 export const useAuthStore = defineStore("auth", () => {
@@ -62,7 +62,7 @@ export const useAuthStore = defineStore("auth", () => {
   /** Load or auto-create profile if missing */
   async function loadProfile(
     uid: string,
-    emailHint?: string,
+    emailHint?: string
   ): Promise<Profile> {
     const { data, error: err } = await supabase
       .from("profiles")
@@ -103,7 +103,7 @@ export const useAuthStore = defineStore("auth", () => {
         "ผู้ใช้งาน",
       role: testMeta?.role || UserRole.EMPLOYEE,
       department_id: deptId,
-      is_active: true,
+      is_active: true
     };
 
     const { data: insertedData, error: insertErr } = await supabase
@@ -131,7 +131,7 @@ export const useAuthStore = defineStore("auth", () => {
       const { data: authData, error: authError } =
         await supabase.auth.signInWithPassword({
           email: cleanEmail,
-          password,
+          password
         });
 
       if (authError) {
@@ -140,7 +140,7 @@ export const useAuthStore = defineStore("auth", () => {
           authError.status === 400
         ) {
           throw new Error(
-            "อีเมลหรือรหัสผ่านไม่ถูกต้อง (กรุณาตรวจสอบบัญชีผู้ใช้ใน Supabase Auth)",
+            "อีเมลหรือรหัสผ่านไม่ถูกต้อง (กรุณาตรวจสอบบัญชีผู้ใช้ใน Supabase Auth)"
           );
         }
         throw new Error(authError.message);
@@ -173,7 +173,7 @@ export const useAuthStore = defineStore("auth", () => {
     isLoading.value = true;
     try {
       const {
-        data: { session: existingSession },
+        data: { session: existingSession }
       } = await supabase.auth.getSession();
 
       if (existingSession) {
@@ -230,6 +230,6 @@ export const useAuthStore = defineStore("auth", () => {
     logout,
     restoreSession,
     refreshProfile,
-    setupAuthListener,
+    setupAuthListener
   };
 });

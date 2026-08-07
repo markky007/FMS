@@ -11,9 +11,9 @@ const routes: RouteRecordRaw[] = [
       {
         path: "",
         name: "login",
-        component: () => import("@/features/auth/pages/LoginPage.vue"),
-      },
-    ],
+        component: () => import("@/features/auth/pages/LoginPage.vue")
+      }
+    ]
   },
   {
     path: "/",
@@ -24,7 +24,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: "home",
         name: "home",
-        component: () => import("@/features/home/pages/HomePage.vue"),
+        component: () => import("@/features/home/pages/HomePage.vue")
       },
       // Delivery (All roles: Employee, Manager, Admin)
       {
@@ -35,21 +35,21 @@ const routes: RouteRecordRaw[] = [
             path: "",
             name: "delivery-list",
             component: () =>
-              import("@/features/delivery/pages/DeliveryListPage.vue"),
+              import("@/features/delivery/pages/DeliveryListPage.vue")
           },
           {
             path: "create",
             name: "delivery-create",
             component: () =>
-              import("@/features/delivery/pages/DeliveryCreatePage.vue"),
+              import("@/features/delivery/pages/DeliveryCreatePage.vue")
           },
           {
             path: ":id",
             name: "delivery-detail",
             component: () =>
-              import("@/features/delivery/pages/DeliveryDetailPage.vue"),
-          },
-        ],
+              import("@/features/delivery/pages/DeliveryDetailPage.vue")
+          }
+        ]
       },
       // Receiving (All roles: Employee, Manager, Admin)
       {
@@ -60,22 +60,22 @@ const routes: RouteRecordRaw[] = [
             path: "",
             name: "receiving-pending",
             component: () =>
-              import("@/features/receiving/pages/PendingListPage.vue"),
+              import("@/features/receiving/pages/PendingListPage.vue")
           },
           {
             path: "history",
             name: "receiving-history",
             component: () =>
-              import("@/features/receiving/pages/ReceivedHistoryPage.vue"),
-          },
-        ],
+              import("@/features/receiving/pages/ReceivedHistoryPage.vue")
+          }
+        ]
       },
       // Reports (All roles: Employee, Manager, Admin)
       {
         path: "reports",
         name: "reports",
         meta: { roles: ["employee", "manager", "admin"] },
-        component: () => import("@/features/reports/pages/ReportPage.vue"),
+        component: () => import("@/features/reports/pages/ReportPage.vue")
       },
       // Admin (Admin only)
       {
@@ -86,35 +86,34 @@ const routes: RouteRecordRaw[] = [
             path: "users",
             name: "admin-users",
             component: () =>
-              import("@/features/admin/pages/UserManagementPage.vue"),
+              import("@/features/admin/pages/UserManagementPage.vue")
           },
           {
             path: "departments",
             name: "admin-departments",
             component: () =>
-              import("@/features/admin/pages/DepartmentManagementPage.vue"),
+              import("@/features/admin/pages/DepartmentManagementPage.vue")
           },
           {
             path: "audit-log",
             name: "admin-audit-log",
-            component: () =>
-              import("@/features/admin/pages/AuditLogPage.vue"),
-          },
-        ],
+            component: () => import("@/features/admin/pages/AuditLogPage.vue")
+          }
+        ]
       },
       // Profile
       {
         path: "profile",
         name: "profile",
-        component: () => import("@/features/profile/pages/ProfilePage.vue"),
-      },
-    ],
+        component: () => import("@/features/profile/pages/ProfilePage.vue")
+      }
+    ]
   },
   // Catch all -> redirect to home
   {
     path: "/:catchAll(.*)*",
-    redirect: "/home",
-  },
+    redirect: "/home"
+  }
 ];
 
 export default routes;

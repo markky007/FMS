@@ -41,7 +41,7 @@ export const useDeliverySlipStore = defineStore("delivery-slip", () => {
           creator:profiles!created_by(id, full_name, email, department_id),
           items:delivery_items(id, is_received)
         `,
-          { count: "exact" },
+          { count: "exact" }
         )
         .order("created_at", { ascending: false });
 
@@ -49,7 +49,7 @@ export const useDeliverySlipStore = defineStore("delivery-slip", () => {
       if (authStore.isStaff) {
         if (authStore.departmentId) {
           query = query.or(
-            `created_by.eq.${authStore.userId},to_department_id.eq.${authStore.departmentId}`,
+            `created_by.eq.${authStore.userId},to_department_id.eq.${authStore.departmentId}`
           );
         } else {
           query = query.eq("created_by", authStore.userId);
@@ -61,7 +61,10 @@ export const useDeliverySlipStore = defineStore("delivery-slip", () => {
         query = query.eq("status", activeFilters.status);
       }
       if (activeFilters.from_department_id) {
-        query = query.eq("from_department_id", activeFilters.from_department_id);
+        query = query.eq(
+          "from_department_id",
+          activeFilters.from_department_id
+        );
       }
       if (activeFilters.to_department_id) {
         query = query.eq("to_department_id", activeFilters.to_department_id);
@@ -76,9 +79,9 @@ export const useDeliverySlipStore = defineStore("delivery-slip", () => {
       const { data, count, error } = await query;
       if (error) throw new Error(error.message);
 
-      mySlips.value = (data || []).map((slip) => ({
+      mySlips.value = (data || []).map(slip => ({
         ...slip,
-        item_count: slip.items?.length || 0,
+        item_count: slip.items?.length || 0
       })) as DeliverySlip[];
 
       totalCount.value = count || 0;
@@ -104,7 +107,7 @@ export const useDeliverySlipStore = defineStore("delivery-slip", () => {
             attachments:item_attachments(*),
             signature:signatures!signature_id(*)
           )
-        `,
+        `
         )
         .eq("id", id)
         .single();
@@ -113,7 +116,7 @@ export const useDeliverySlipStore = defineStore("delivery-slip", () => {
 
       currentSlip.value = data as DeliverySlip;
       currentItems.value = (data.items || []).sort(
-        (a: DeliveryItem, b: DeliveryItem) => a.item_number - b.item_number,
+        (a: DeliveryItem, b: DeliveryItem) => a.item_number - b.item_number
       ) as DeliveryItem[];
 
       return currentSlip.value;
@@ -137,6 +140,6 @@ export const useDeliverySlipStore = defineStore("delivery-slip", () => {
     filters,
     fetchMySlips,
     fetchSlipDetail,
-    clearCurrent,
+    clearCurrent
   };
 });

@@ -2,7 +2,9 @@ declare namespace Deno {
   export namespace env {
     export function get(key: string): string | undefined;
   }
-  export function serve(handler: (req: Request) => Promise<Response> | Response): void;
+  export function serve(
+    handler: (req: Request) => Promise<Response> | Response
+  ): void;
 }
 
 declare module "https://*" {

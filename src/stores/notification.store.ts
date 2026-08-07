@@ -25,7 +25,7 @@ export const useNotificationStore = defineStore("notification", () => {
         .select("id")
         .eq("to_department_id", authStore.departmentId)
         .in("status", ["sent", "partially_received"]);
-      incomingSlipIds = (data || []).map((s) => s.id);
+      incomingSlipIds = (data || []).map(s => s.id);
     }
 
     let query = supabase
@@ -35,7 +35,7 @@ export const useNotificationStore = defineStore("notification", () => {
 
     if (incomingSlipIds.length > 0) {
       query = query.or(
-        `receiver_user_id.eq.${authStore.userId},delivery_slip_id.in.(${incomingSlipIds.join(",")})`,
+        `receiver_user_id.eq.${authStore.userId},delivery_slip_id.in.(${incomingSlipIds.join(",")})`
       );
     } else {
       query = query.eq("receiver_user_id", authStore.userId);
@@ -58,11 +58,11 @@ export const useNotificationStore = defineStore("notification", () => {
         {
           event: "*",
           schema: "public",
-          table: "delivery_items",
+          table: "delivery_items"
         },
         () => {
           void fetchPendingCount();
-        },
+        }
       )
       .subscribe();
   }
@@ -78,6 +78,6 @@ export const useNotificationStore = defineStore("notification", () => {
     pendingCount,
     fetchPendingCount,
     subscribeToPending,
-    unsubscribe,
+    unsubscribe
   };
 });

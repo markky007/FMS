@@ -2,7 +2,10 @@
   <div class="login-bg-container" aria-hidden="true">
     <!-- Ambient Radial Glow -->
     <div class="ambient-orb" :class="{ 'is-reduced': isLowPerformance }" />
-    <div class="ambient-orb-secondary" :class="{ 'is-reduced': isLowPerformance }" />
+    <div
+      class="ambient-orb-secondary"
+      :class="{ 'is-reduced': isLowPerformance }"
+    />
 
     <!-- Vector Wave Contours -->
     <svg
@@ -25,11 +28,25 @@
         fill="url(#wave-grad-2)"
       />
       <defs>
-        <linearGradient id="wave-grad-1" x1="0" y1="0" x2="1440" y2="900" gradientUnits="userSpaceOnUse">
+        <linearGradient
+          id="wave-grad-1"
+          x1="0"
+          y1="0"
+          x2="1440"
+          y2="900"
+          gradientUnits="userSpaceOnUse"
+        >
           <stop stop-color="#1B365D" stop-opacity="0.35" />
           <stop offset="1" stop-color="#0F172A" stop-opacity="0.85" />
         </linearGradient>
-        <linearGradient id="wave-grad-2" x1="0" y1="0" x2="1440" y2="900" gradientUnits="userSpaceOnUse">
+        <linearGradient
+          id="wave-grad-2"
+          x1="0"
+          y1="0"
+          x2="1440"
+          y2="900"
+          gradientUnits="userSpaceOnUse"
+        >
           <stop stop-color="#D97706" stop-opacity="0.12" />
           <stop offset="1" stop-color="#1B365D" stop-opacity="0.5" />
         </linearGradient>
@@ -76,7 +93,11 @@ onMounted(() => {
   width: 650px;
   height: 650px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(217, 119, 6, 0.16) 0%, rgba(27, 54, 93, 0) 70%);
+  background: radial-gradient(
+    circle,
+    rgba(217, 119, 6, 0.16) 0%,
+    rgba(27, 54, 93, 0) 70%
+  );
   filter: blur(40px);
   animation: orbPulse 9s ease-in-out infinite alternate;
 
@@ -93,7 +114,11 @@ onMounted(() => {
   width: 500px;
   height: 500px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(37, 99, 235, 0.15) 0%, rgba(15, 23, 42, 0) 70%);
+  background: radial-gradient(
+    circle,
+    rgba(37, 99, 235, 0.15) 0%,
+    rgba(15, 23, 42, 0) 70%
+  );
   filter: blur(50px);
   animation: orbPulse 12s ease-in-out infinite alternate-reverse;
 

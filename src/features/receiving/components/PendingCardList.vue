@@ -18,18 +18,25 @@
         </div>
 
         <div v-if="item.delivery_slip" class="text-caption text-grey-8 q-mb-xs">
-          <span class="text-weight-medium">เลขที่ใบส่ง:</span> {{ item.delivery_slip.slip_number }}
+          <span class="text-weight-medium">เลขที่ใบส่ง:</span>
+          {{ item.delivery_slip.slip_number }}
           <span class="q-ml-sm text-grey-6">
-            ({{ item.delivery_slip.from_department?.code }} → {{ item.delivery_slip.to_department?.code }})
+            ({{ item.delivery_slip.from_department?.code }} →
+            {{ item.delivery_slip.to_department?.code }})
           </span>
         </div>
 
-        <div class="row justify-between items-center text-caption text-grey-7 q-mb-sm">
+        <div
+          class="row justify-between items-center text-caption text-grey-7 q-mb-sm"
+        >
           <div>ผู้ส่ง: {{ item.sender_name }}</div>
           <div>ผู้รับ: {{ item.receiver_name }}</div>
         </div>
 
-        <div v-if="item.attachments && item.attachments.length > 0" class="q-mb-sm">
+        <div
+          v-if="item.attachments && item.attachments.length > 0"
+          class="q-mb-sm"
+        >
           <AttachmentViewer :attachments="item.attachments" />
         </div>
 

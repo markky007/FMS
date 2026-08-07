@@ -24,8 +24,8 @@ const props = withDefaults(
   {
     size: "md",
     dense: false,
-    showIcon: true,
-  },
+    showIcon: true
+  }
 );
 
 const config = computed(() => {
@@ -34,7 +34,7 @@ const config = computed(() => {
     SLIP_STATUS_CONFIG[s] || {
       label: props.status,
       color: "grey",
-      icon: "help_outline",
+      icon: "help_outline"
     }
   );
 });

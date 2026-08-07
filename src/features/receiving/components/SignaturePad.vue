@@ -40,7 +40,8 @@
         @click="clear"
       />
       <div class="text-caption text-grey-6">
-        ผู้เซ็น: <span class="text-weight-bold text-dark">{{ signerName }}</span>
+        ผู้เซ็น:
+        <span class="text-weight-bold text-dark">{{ signerName }}</span>
       </div>
     </div>
   </div>
@@ -57,8 +58,8 @@ const props = withDefaults(
   }>(),
   {
     penColor: "#0f172a",
-    lineWidth: 3,
-  },
+    lineWidth: 3
+  }
 );
 
 const emit = defineEmits<{
@@ -111,7 +112,7 @@ function getPoint(evt: MouseEvent | PointerEvent): { x: number; y: number } {
   const rect = canvasRef.value.getBoundingClientRect();
   return {
     x: evt.clientX - rect.left,
-    y: evt.clientY - rect.top,
+    y: evt.clientY - rect.top
   };
 }
 
@@ -121,7 +122,7 @@ function getTouchPoint(evt: TouchEvent): { x: number; y: number } {
   const touch = evt.touches[0];
   return {
     x: touch.clientX - rect.left,
-    y: touch.clientY - rect.top,
+    y: touch.clientY - rect.top
   };
 }
 
@@ -182,12 +183,12 @@ function clear() {
 
 /** Export canvas signature as PNG Blob */
 function toBlob(): Promise<Blob | null> {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     if (!canvasRef.value || isEmpty.value) {
       resolve(null);
       return;
     }
-    canvasRef.value.toBlob((blob) => {
+    canvasRef.value.toBlob(blob => {
       resolve(blob);
     }, "image/png");
   });
@@ -218,7 +219,7 @@ defineExpose({
   initCanvas,
   clear,
   toBlob,
-  isEmpty,
+  isEmpty
 });
 </script>
 

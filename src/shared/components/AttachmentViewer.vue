@@ -1,6 +1,9 @@
 <template>
   <div>
-    <div v-if="attachments && attachments.length > 0" class="row q-gutter-xs items-center justify-center">
+    <div
+      v-if="attachments && attachments.length > 0"
+      class="row q-gutter-xs items-center justify-center"
+    >
       <q-btn
         v-for="att in attachments"
         :key="att.id"
@@ -21,7 +24,12 @@
     <span v-else class="text-caption text-grey-5">-</span>
 
     <!-- Image Preview Modal -->
-    <q-dialog v-model="showDialog" maximized transition-show="fade" transition-hide="fade">
+    <q-dialog
+      v-model="showDialog"
+      maximized
+      transition-show="fade"
+      transition-hide="fade"
+    >
       <q-card class="bg-black text-white flex flex-center relative-position">
         <q-btn
           icon="close"
@@ -116,7 +124,7 @@ async function openAttachment(att: ItemAttachment) {
   try {
     const url = await getSignedUrl(
       APP_CONFIG.STORAGE_BUCKETS.ATTACHMENTS,
-      att.storage_path,
+      att.storage_path
     );
 
     if (!url) {

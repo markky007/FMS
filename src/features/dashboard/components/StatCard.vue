@@ -12,7 +12,10 @@
           <div class="text-caption text-weight-bold text-uppercase text-grey-7">
             {{ title }}
           </div>
-          <div class="text-h4 text-weight-bolder tabular-nums q-mt-xs" :class="`text-${color}`">
+          <div
+            class="text-h4 text-weight-bolder tabular-nums q-mt-xs"
+            :class="`text-${color}`"
+          >
             {{ value }}
           </div>
           <div v-if="subtitle" class="text-caption text-grey-6 q-mt-xs">
@@ -43,8 +46,8 @@ withDefaults(
     color?: string;
   }>(),
   {
-    color: "primary",
-  },
+    color: "primary"
+  }
 );
 
 defineEmits<{
@@ -54,7 +57,10 @@ defineEmits<{
 
 <style scoped lang="scss">
 .stat-card {
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
   background-color: var(--neutral-surface);
   border: 1px solid var(--neutral-border);
 }

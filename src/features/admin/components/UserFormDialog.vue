@@ -17,7 +17,7 @@
             outlined
             dense
             autofocus
-            :rules="[(val) => !!val || 'กรุณากรอกชื่อ-นามสกุล']"
+            :rules="[val => !!val || 'กรุณากรอกชื่อ-นามสกุล']"
           />
 
           <q-input
@@ -27,7 +27,7 @@
             outlined
             dense
             :disabled="isEdit"
-            :rules="[(val) => !!val || 'กรุณากรอกอีเมล']"
+            :rules="[val => !!val || 'กรุณากรอกอีเมล']"
           />
 
           <q-input
@@ -39,8 +39,9 @@
             dense
             hint="ขั้นต่ำ 8 ตัวอักษร"
             :rules="[
-              (val) => !!val || 'กรุณากรอกรหัสผ่าน',
-              (val) => (val && val.length >= 8) || 'รหัสผ่านต้องอย่างน้อย 8 ตัวอักษร',
+              val => !!val || 'กรุณากรอกรหัสผ่าน',
+              val =>
+                (val && val.length >= 8) || 'รหัสผ่านต้องอย่างน้อย 8 ตัวอักษร'
             ]"
           />
 
@@ -112,20 +113,23 @@ const form = ref<UserFormInput>({
   full_name: props.user?.full_name || "",
   role: (props.user?.role as UserRole) || UserRole.EMPLOYEE,
   department_id: props.user?.department_id || null,
-  is_active: props.user?.is_active ?? true,
+  is_active: props.user?.is_active ?? true
 });
 
 const roleOptions = [
-  { label: USER_ROLE_CONFIG[UserRole.EMPLOYEE].label, value: UserRole.EMPLOYEE },
+  {
+    label: USER_ROLE_CONFIG[UserRole.EMPLOYEE].label,
+    value: UserRole.EMPLOYEE
+  },
   { label: USER_ROLE_CONFIG[UserRole.MANAGER].label, value: UserRole.MANAGER },
-  { label: USER_ROLE_CONFIG[UserRole.ADMIN].label, value: UserRole.ADMIN },
+  { label: USER_ROLE_CONFIG[UserRole.ADMIN].label, value: UserRole.ADMIN }
 ];
 
 const departmentOptions = computed(() =>
-  props.departments.map((d) => ({
+  props.departments.map(d => ({
     label: `${d.code} - ${d.name}`,
-    value: d.id,
-  })),
+    value: d.id
+  }))
 );
 
 function handleSubmit() {

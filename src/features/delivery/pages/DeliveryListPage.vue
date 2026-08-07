@@ -123,32 +123,34 @@ const departmentStore = useDepartmentStore();
 useRealtimeSubscription({
   onSlipChange: () => {
     void onFilterChange();
-  },
+  }
 });
 
 const filters = ref({
   status: undefined as SlipStatus | undefined,
   from_department_id: undefined as string | undefined,
-  to_department_id: undefined as string | undefined,
+  to_department_id: undefined as string | undefined
 });
 
-const statusOptions = Object.values(SlipStatus).map((s) => ({
+const statusOptions = Object.values(SlipStatus).map(s => ({
   label: SLIP_STATUS_CONFIG[s]?.label || s,
-  value: s,
+  value: s
 }));
 
 const departmentOptions = computed(() =>
-  departmentStore.departments.map((d) => ({
+  departmentStore.departments.map(d => ({
     label: `${d.code} - ${d.name}`,
-    value: d.id,
-  })),
+    value: d.id
+  }))
 );
 
 async function onFilterChange() {
   const payload: SlipFilters = {};
   if (filters.value.status) payload.status = filters.value.status;
-  if (filters.value.from_department_id) payload.from_department_id = filters.value.from_department_id;
-  if (filters.value.to_department_id) payload.to_department_id = filters.value.to_department_id;
+  if (filters.value.from_department_id)
+    payload.from_department_id = filters.value.from_department_id;
+  if (filters.value.to_department_id)
+    payload.to_department_id = filters.value.to_department_id;
 
   await slipStore.fetchMySlips(payload);
 }
@@ -158,9 +160,6 @@ function onSelectSlip(slip: DeliverySlip) {
 }
 
 onMounted(async () => {
-  await Promise.all([
-    departmentStore.fetchAll(),
-    slipStore.fetchMySlips(),
-  ]);
+  await Promise.all([departmentStore.fetchAll(), slipStore.fetchMySlips()]);
 });
 </script>

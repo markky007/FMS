@@ -41,13 +41,13 @@ export default defineConfig((/* ctx */) => {
         "import.meta.env.VITE_SUPABASE_URL": JSON.stringify(
           process.env.VITE_SUPABASE_URL ||
             process.env.SUPABASE_URL ||
-            "https://dwqirgirtmkkbszpsbzi.supabase.co",
+            "https://dwqirgirtmkkbszpsbzi.supabase.co"
         ),
         "import.meta.env.VITE_SUPABASE_ANON_KEY": JSON.stringify(
           process.env.VITE_SUPABASE_ANON_KEY ||
             process.env.SUPABASE_PUBLISHABLE_KEY ||
-            "sb_publishable_yT7iYDERfZdwJWhBYzVsNA_bOArsQNX",
-        ),
+            "sb_publishable_yT7iYDERfZdwJWhBYzVsNA_bOArsQNX"
+        )
       },
 
       typescript: {

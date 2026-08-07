@@ -14,7 +14,8 @@ function getEnv(key) {
   }
 }
 
-const SUPABASE_URL = getEnv("SUPABASE_URL") || "https://dwqirgirtmkkbszpsbzi.supabase.co";
+const SUPABASE_URL =
+  getEnv("SUPABASE_URL") || "https://dwqirgirtmkkbszpsbzi.supabase.co";
 const SUPABASE_SERVICE_KEY = getEnv("SUPABASE_SECRET_KEY");
 
 if (!SUPABASE_SERVICE_KEY) {
@@ -25,8 +26,8 @@ if (!SUPABASE_SERVICE_KEY) {
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY, {
   auth: {
     autoRefreshToken: false,
-    persistSession: false,
-  },
+    persistSession: false
+  }
 });
 
 async function main() {
@@ -41,7 +42,7 @@ async function main() {
         console.log(`Creating public storage bucket '${b}'...`);
         const { error: createErr } = await supabase.storage.createBucket(b, {
           public: true,
-          fileSizeLimit: 10485760, // 10MB
+          fileSizeLimit: 10485760 // 10MB
         });
         if (createErr) {
           console.error(`  Failed to create bucket '${b}':`, createErr.message);

@@ -20,16 +20,26 @@
 
         <div class="text-body2 text-weight-medium text-grey-9 q-mb-xs">
           {{ slip.from_department?.code }}
-          <q-icon name="arrow_forward" size="16px" color="grey-6" class="q-mx-xs" />
+          <q-icon
+            name="arrow_forward"
+            size="16px"
+            color="grey-6"
+            class="q-mx-xs"
+          />
           {{ slip.to_department?.code }}
         </div>
 
         <div class="row items-center justify-between text-caption text-grey-7">
-          <div>ผู้จัดส่ง: {{ slip.delivered_by_name || slip.creator?.full_name || "-" }}</div>
+          <div
+            >ผู้จัดส่ง:
+            {{ slip.delivered_by_name || slip.creator?.full_name || "-" }}</div
+          >
           <div>วันที่: {{ formatDate(slip.send_date) }}</div>
         </div>
 
-        <div class="row items-center justify-between text-caption text-grey-6 q-mt-xs pt-xs border-top">
+        <div
+          class="row items-center justify-between text-caption text-grey-6 q-mt-xs pt-xs border-top"
+        >
           <div>จำนวนรายการ: {{ slip.item_count || 0 }} รายการ</div>
           <q-icon name="chevron_right" size="20px" color="grey-6" />
         </div>
@@ -56,7 +66,7 @@ function formatDate(dateStr: string): string {
   return d.toLocaleDateString("th-TH", {
     day: "numeric",
     month: "short",
-    year: "2-digit",
+    year: "2-digit"
   });
 }
 </script>

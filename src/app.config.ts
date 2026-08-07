@@ -29,13 +29,13 @@ export const APP_CONFIG = {
     "application/vnd.ms-excel",
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     "text/csv",
-    "application/csv",
+    "application/csv"
   ],
 
   /** Supabase Storage bucket names */
   STORAGE_BUCKETS: {
     ATTACHMENTS: "attachments",
-    SIGNATURES: "signatures",
+    SIGNATURES: "signatures"
   },
 
   /** Signed URL expiry time in seconds (1 hour) */
@@ -44,6 +44,6 @@ export const APP_CONFIG = {
   /** Pagination defaults */
   PAGINATION: {
     DEFAULT_PAGE_SIZE: 20,
-    PAGE_SIZE_OPTIONS: [10, 20, 50, 100],
-  },
+    PAGE_SIZE_OPTIONS: [10, 20, 50, 100]
+  }
 } as const;

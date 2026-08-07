@@ -59,7 +59,12 @@
       >
         <template #body-cell-code="props">
           <q-td :props="props">
-            <q-chip dense color="blue-1" text-color="primary" class="text-weight-bold">
+            <q-chip
+              dense
+              color="blue-1"
+              text-color="primary"
+              class="text-weight-bold"
+            >
               {{ props.value }}
             </q-chip>
           </q-td>
@@ -71,7 +76,7 @@
               :color="props.value === DepartmentType.BRANCH ? 'purple' : 'teal'"
               multi-line
             >
-              {{ props.value === DepartmentType.BRANCH ? 'สาขา' : 'แผนก' }}
+              {{ props.value === DepartmentType.BRANCH ? "สาขา" : "แผนก" }}
             </q-badge>
           </q-td>
         </template>
@@ -79,7 +84,7 @@
         <template #body-cell-is_active="props">
           <q-td :props="props">
             <q-badge :color="props.value ? 'positive' : 'grey'">
-              {{ props.value ? 'เปิดใช้งาน' : 'ปิดใช้งาน' }}
+              {{ props.value ? "เปิดใช้งาน" : "ปิดใช้งาน" }}
             </q-badge>
           </q-td>
         </template>
@@ -105,7 +110,7 @@
               @click="toggleStatus(props.row)"
             >
               <q-tooltip>
-                {{ props.row.is_active ? 'ปิดใช้งาน' : 'เปิดใช้งาน' }}
+                {{ props.row.is_active ? "ปิดใช้งาน" : "เปิดใช้งาน" }}
               </q-tooltip>
             </q-btn>
           </q-td>
@@ -118,7 +123,10 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
 import { useQuasar } from "quasar";
-import { useDepartmentManagement, type DepartmentFormInput } from "../composables/useDepartmentManagement";
+import {
+  useDepartmentManagement,
+  type DepartmentFormInput
+} from "../composables/useDepartmentManagement";
 import DepartmentFormDialog from "../components/DepartmentFormDialog.vue";
 import { DepartmentType } from "@/types/enums";
 import type { Department } from "@/types/models";
@@ -130,7 +138,7 @@ const {
   fetchAllDepartments,
   createDepartment,
   updateDepartment,
-  toggleStatus,
+  toggleStatus
 } = useDepartmentManagement();
 
 const search = ref("");
@@ -139,43 +147,77 @@ const typeFilter = ref<string | null>(null);
 const typeFilterOptions = [
   { label: "ทั้งหมด", value: null },
   { label: "สาขา (Branch)", value: DepartmentType.BRANCH },
-  { label: "แผนก (Department)", value: DepartmentType.DEPARTMENT },
+  { label: "แผนก (Department)", value: DepartmentType.DEPARTMENT }
 ];
 
 const branches = computed(() =>
-  allDepartments.value.filter((d) => d.type === DepartmentType.BRANCH),
+  allDepartments.value.filter(d => d.type === DepartmentType.BRANCH)
 );
 
 const filteredDepartments = computed(() => {
   let list = allDepartments.value;
   if (typeFilter.value) {
-    list = list.filter((d) => d.type === typeFilter.value);
+    list = list.filter(d => d.type === typeFilter.value);
   }
   if (search.value.trim()) {
     const q = search.value.toLowerCase().trim();
     list = list.filter(
-      (d) =>
-        d.code.toLowerCase().includes(q) || d.name.toLowerCase().includes(q),
+      d => d.code.toLowerCase().includes(q) || d.name.toLowerCase().includes(q)
     );
   }
   return list;
 });
 
 const columns = [
-  { name: "code", label: "รหัส", field: "code", sortable: true, align: "left" as const },
-  { name: "name", label: "ชื่อสาขา/แผนก", field: "name", sortable: true, align: "left" as const },
-  { name: "type", label: "ประเภท", field: "type", sortable: true, align: "center" as const },
-  { name: "sort_order", label: "ลำดับ", field: "sort_order", sortable: true, align: "center" as const },
-  { name: "is_active", label: "สถานะ", field: "is_active", sortable: true, align: "center" as const },
-  { name: "actions", label: "จัดการ", field: "actions", align: "right" as const },
+  {
+    name: "code",
+    label: "รหัส",
+    field: "code",
+    sortable: true,
+    align: "left" as const
+  },
+  {
+    name: "name",
+    label: "ชื่อสาขา/แผนก",
+    field: "name",
+    sortable: true,
+    align: "left" as const
+  },
+  {
+    name: "type",
+    label: "ประเภท",
+    field: "type",
+    sortable: true,
+    align: "center" as const
+  },
+  {
+    name: "sort_order",
+    label: "ลำดับ",
+    field: "sort_order",
+    sortable: true,
+    align: "center" as const
+  },
+  {
+    name: "is_active",
+    label: "สถานะ",
+    field: "is_active",
+    sortable: true,
+    align: "center" as const
+  },
+  {
+    name: "actions",
+    label: "จัดการ",
+    field: "actions",
+    align: "right" as const
+  }
 ];
 
 function openCreateDialog() {
   $q.dialog({
     component: DepartmentFormDialog,
     componentProps: {
-      branches: branches.value,
-    },
+      branches: branches.value
+    }
   }).onOk(async (data: DepartmentFormInput) => {
     await createDepartment(data);
   });
@@ -186,8 +228,8 @@ function openEditDialog(dept: Department) {
     component: DepartmentFormDialog,
     componentProps: {
       department: dept,
-      branches: branches.value,
-    },
+      branches: branches.value
+    }
   }).onOk(async (data: DepartmentFormInput) => {
     await updateDepartment(dept.id, data);
   });

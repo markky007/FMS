@@ -1,8 +1,17 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <AppHeader :show-menu-button="true" @toggle-left-drawer="leftDrawerOpen = !leftDrawerOpen" />
+    <AppHeader
+      :show-menu-button="true"
+      @toggle-left-drawer="leftDrawerOpen = !leftDrawerOpen"
+    />
 
-    <q-drawer v-model="leftDrawerOpen" side="left" overlay behavior="mobile" class="bg-white">
+    <q-drawer
+      v-model="leftDrawerOpen"
+      side="left"
+      overlay
+      behavior="mobile"
+      class="bg-white"
+    >
       <DesktopSidebar />
     </q-drawer>
 

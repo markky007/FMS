@@ -1,7 +1,12 @@
 <template>
   <div>
     <!-- Desktop Table View -->
-    <q-markup-table v-if="$q.screen.gt.sm" flat bordered class="rounded-borders">
+    <q-markup-table
+      v-if="$q.screen.gt.sm"
+      flat
+      bordered
+      class="rounded-borders"
+    >
       <thead>
         <tr class="bg-grey-2 text-grey-8">
           <th class="text-center" style="width: 50px">Item No.</th>
@@ -19,13 +24,22 @@
           <td>{{ item.receiver_name }}</td>
           <td>{{ item.sender_name }}</td>
           <td>
-            <q-badge color="blue-2" text-color="primary" class="text-weight-bold">
+            <q-badge
+              color="blue-2"
+              text-color="primary"
+              class="text-weight-bold"
+            >
               {{ item.quantity }}
             </q-badge>
           </td>
           <td>
-            <div class="text-weight-medium">{{ item.document_description }}</div>
-            <div v-if="item.is_received" class="text-caption text-positive row items-center q-mt-xs">
+            <div class="text-weight-medium">{{
+              item.document_description
+            }}</div>
+            <div
+              v-if="item.is_received"
+              class="text-caption text-positive row items-center q-mt-xs"
+            >
               <q-icon name="check_circle" size="14px" class="q-mr-xs" />
               รับแล้วเมื่อ {{ formatDate(item.received_at) }}
             </div>
@@ -50,7 +64,10 @@
           </td>
         </tr>
         <tr v-if="items.length === 0">
-          <td :colspan="editable ? 7 : 6" class="text-center text-grey-5 q-pa-md">
+          <td
+            :colspan="editable ? 7 : 6"
+            class="text-center text-grey-5 q-pa-md"
+          >
             ยังไม่มีรายการเอกสารในใบส่งนี้
           </td>
         </tr>
@@ -69,7 +86,12 @@
         <q-card-section class="q-pa-sm">
           <div class="row items-center justify-between q-mb-xs">
             <div class="row items-center">
-              <q-avatar size="24px" color="primary" text-color="white" class="text-caption text-weight-bold q-mr-xs">
+              <q-avatar
+                size="24px"
+                color="primary"
+                text-color="white"
+                class="text-caption text-weight-bold q-mr-xs"
+              >
                 {{ item.item_number }}
               </q-avatar>
               <span class="text-weight-bold text-subtitle2">
@@ -101,12 +123,15 @@
             <div class="col-6 row items-center">
               <span class="text-grey-6 q-mr-xs">สถานะ:</span>
               <q-badge :color="item.is_received ? 'positive' : 'orange'" dense>
-                {{ item.is_received ? 'รับแล้ว' : 'ยังไม่รับ' }}
+                {{ item.is_received ? "รับแล้ว" : "ยังไม่รับ" }}
               </q-badge>
             </div>
           </div>
 
-          <div v-if="item.attachments && item.attachments.length > 0" class="q-mt-xs">
+          <div
+            v-if="item.attachments && item.attachments.length > 0"
+            class="q-mt-xs"
+          >
             <AttachmentViewer :attachments="item.attachments" />
           </div>
         </q-card-section>
@@ -129,8 +154,8 @@ withDefaults(
     editable?: boolean;
   }>(),
   {
-    editable: false,
-  },
+    editable: false
+  }
 );
 
 defineEmits<{
@@ -141,7 +166,7 @@ function formatDate(dt?: string | null): string {
   if (!dt) return "";
   return new Date(dt).toLocaleString("th-TH", {
     dateStyle: "short",
-    timeStyle: "short",
+    timeStyle: "short"
   });
 }
 </script>

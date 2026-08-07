@@ -33,7 +33,9 @@
         <q-card flat bordered class="bg-blue-1 text-primary">
           <q-card-section class="row items-center justify-between">
             <div>
-              <div class="text-h5 text-weight-bold">{{ stats.total_slips }}</div>
+              <div class="text-h5 text-weight-bold">{{
+                stats.total_slips
+              }}</div>
               <div class="text-caption">ใบส่งเอกสารทั้งหมด</div>
             </div>
             <q-icon name="description" size="36px" />
@@ -45,7 +47,9 @@
         <q-card flat bordered class="bg-green-1 text-positive">
           <q-card-section class="row items-center justify-between">
             <div>
-              <div class="text-h5 text-weight-bold">{{ stats.fully_received }}</div>
+              <div class="text-h5 text-weight-bold">{{
+                stats.fully_received
+              }}</div>
               <div class="text-caption">รับครบเรียบร้อย</div>
             </div>
             <q-icon name="check_circle" size="36px" />
@@ -157,7 +161,12 @@
             <span class="text-weight-medium">
               {{ props.row.from_department?.code }}
             </span>
-            <q-icon name="arrow_forward" size="14px" color="grey-6" class="q-mx-xs" />
+            <q-icon
+              name="arrow_forward"
+              size="14px"
+              color="grey-6"
+              class="q-mx-xs"
+            />
             <span class="text-weight-medium">
               {{ props.row.to_department?.code }}
             </span>
@@ -206,29 +215,76 @@ const router = useRouter();
 const departmentStore = useDepartmentStore();
 const slipStore = useDeliverySlipStore();
 
-const { slips, isLoading, stats, reportFilters, fetchReportData, printDocument } =
-  useReport();
+const {
+  slips,
+  isLoading,
+  stats,
+  reportFilters,
+  fetchReportData,
+  printDocument
+} = useReport();
 
-const statusFilterOptions = Object.values(SlipStatus).map((s) => ({
+const statusFilterOptions = Object.values(SlipStatus).map(s => ({
   label: SLIP_STATUS_CONFIG[s]?.label || s,
-  value: s,
+  value: s
 }));
 
 const departmentOptions = computed(() =>
-  departmentStore.departments.map((d) => ({
+  departmentStore.departments.map(d => ({
     label: `${d.code} - ${d.name}`,
-    value: d.id,
-  })),
+    value: d.id
+  }))
 );
 
 const columns = [
-  { name: "slip_number", label: "เลขที่ใบส่ง", field: "slip_number", sortable: true, align: "left" as const },
-  { name: "route", label: "เส้นทาง (จาก → ถึง)", field: "route", align: "left" as const },
-  { name: "delivered_by", label: "ผู้จัดส่ง (Delivery by)", field: (r: DeliverySlip) => r.delivered_by_name || r.creator?.full_name || "-", sortable: true, align: "left" as const },
-  { name: "send_date", label: "วันที่ส่ง", field: "send_date", sortable: true, align: "center" as const },
-  { name: "item_count", label: "จำนวนรายการ", field: (r: DeliverySlip) => r.item_count || 0, sortable: true, align: "center" as const },
-  { name: "status", label: "สถานะ", field: "status", sortable: true, align: "center" as const },
-  { name: "actions", label: "จัดการ", field: "actions", align: "right" as const },
+  {
+    name: "slip_number",
+    label: "เลขที่ใบส่ง",
+    field: "slip_number",
+    sortable: true,
+    align: "left" as const
+  },
+  {
+    name: "route",
+    label: "เส้นทาง (จาก → ถึง)",
+    field: "route",
+    align: "left" as const
+  },
+  {
+    name: "delivered_by",
+    label: "ผู้จัดส่ง (Delivery by)",
+    field: (r: DeliverySlip) =>
+      r.delivered_by_name || r.creator?.full_name || "-",
+    sortable: true,
+    align: "left" as const
+  },
+  {
+    name: "send_date",
+    label: "วันที่ส่ง",
+    field: "send_date",
+    sortable: true,
+    align: "center" as const
+  },
+  {
+    name: "item_count",
+    label: "จำนวนรายการ",
+    field: (r: DeliverySlip) => r.item_count || 0,
+    sortable: true,
+    align: "center" as const
+  },
+  {
+    name: "status",
+    label: "สถานะ",
+    field: "status",
+    sortable: true,
+    align: "center" as const
+  },
+  {
+    name: "actions",
+    label: "จัดการ",
+    field: "actions",
+    align: "right" as const
+  }
 ];
 
 async function onFilterChange() {
@@ -245,15 +301,12 @@ async function openExportDialog(slip: DeliverySlip) {
     component: ExportDialog,
     componentProps: {
       slip: slipStore.currentSlip,
-      items: slipStore.currentItems,
-    },
+      items: slipStore.currentItems
+    }
   });
 }
 
 onMounted(async () => {
-  await Promise.all([
-    departmentStore.fetchAll(),
-    fetchReportData(),
-  ]);
+  await Promise.all([departmentStore.fetchAll(), fetchReportData()]);
 });
 </script>

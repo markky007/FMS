@@ -70,7 +70,7 @@ const { pendingItems, isLoading, fetchPendingItems, signItem, batchSignItems } =
 useRealtimeSubscription({
   onItemChange: () => {
     void fetchPendingItems();
-  },
+  }
 });
 
 function openSignSingle(item: DeliveryItem) {
@@ -78,8 +78,8 @@ function openSignSingle(item: DeliveryItem) {
     component: SignatureDialog,
     componentProps: {
       items: [item],
-      signerName: authStore.fullName || item.receiver_name,
-    },
+      signerName: authStore.fullName || item.receiver_name
+    }
   }).onOk(async (res: { blob: Blob; signerName: string }) => {
     await signItem(item, res.blob, res.signerName);
   });
@@ -90,8 +90,8 @@ function openSignBatch(itemsToSign: DeliveryItem[]) {
     component: SignatureDialog,
     componentProps: {
       items: itemsToSign,
-      signerName: authStore.fullName || "ผู้รับเอกสาร",
-    },
+      signerName: authStore.fullName || "ผู้รับเอกสาร"
+    }
   }).onOk(async (res: { blob: Blob; signerName: string }) => {
     await batchSignItems(itemsToSign, res.blob, res.signerName);
   });

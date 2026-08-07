@@ -18,6 +18,6 @@ export function useResponsive() {
   return {
     isMobile,
     isDesktop,
-    screen: $q.screen,
+    screen: $q.screen
   };
 }

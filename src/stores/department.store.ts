@@ -19,12 +19,12 @@ export const useDepartmentStore = defineStore("department", () => {
 
   /** All active branches (top-level) */
   const branches = computed(() =>
-    departments.value.filter((d) => d.type === DepartmentType.BRANCH),
+    departments.value.filter(d => d.type === DepartmentType.BRANCH)
   );
 
   /** All active departments (under branches) */
   const subDepartments = computed(() =>
-    departments.value.filter((d) => d.type === DepartmentType.DEPARTMENT),
+    departments.value.filter(d => d.type === DepartmentType.DEPARTMENT)
   );
 
   // ─── Actions ────────────────────────────────────────────────────────────────
@@ -61,17 +61,17 @@ export const useDepartmentStore = defineStore("department", () => {
 
   /** Get departments under a specific branch */
   function getDeptsByBranch(branchId: string): Department[] {
-    return departments.value.filter((d) => d.parent_id === branchId);
+    return departments.value.filter(d => d.parent_id === branchId);
   }
 
   /** Find department by ID */
   function getDeptById(id: string): Department | undefined {
-    return departments.value.find((d) => d.id === id);
+    return departments.value.find(d => d.id === id);
   }
 
   /** Find department by code */
   function getDeptByCode(code: string): Department | undefined {
-    return departments.value.find((d) => d.code === code);
+    return departments.value.find(d => d.code === code);
   }
 
   return {
@@ -87,6 +87,6 @@ export const useDepartmentStore = defineStore("department", () => {
     reload,
     getDeptsByBranch,
     getDeptById,
-    getDeptByCode,
+    getDeptByCode
   };
 });

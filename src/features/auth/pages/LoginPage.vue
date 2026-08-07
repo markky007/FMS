@@ -1,5 +1,7 @@
 <template>
-  <div class="login-page-wrapper flex flex-center full-width full-height relative-position">
+  <div
+    class="login-page-wrapper flex flex-center full-width full-height relative-position"
+  >
     <!-- Dynamic Animated Background Layer -->
     <LoginBackground />
 
@@ -41,7 +43,7 @@
               outlined
               autofocus
               :disabled="authStore.isLoading || isSuccess"
-              :rules="[(val) => !!val || 'กรุณากรอกอีเมล']"
+              :rules="[val => !!val || 'กรุณากรอกอีเมล']"
               class="custom-animated-input"
             >
               <template #prepend>
@@ -58,7 +60,7 @@
               :type="showPassword ? 'text' : 'password'"
               outlined
               :disabled="authStore.isLoading || isSuccess"
-              :rules="[(val) => !!val || 'กรุณากรอกรหัสผ่าน']"
+              :rules="[val => !!val || 'กรุณากรอกรหัสผ่าน']"
               class="custom-animated-input"
             >
               <template #prepend>
@@ -99,7 +101,11 @@
               <!-- Success Burst State -->
               <template v-if="isSuccess">
                 <div class="row items-center justify-center gap-xs text-white">
-                  <q-icon name="check_circle" size="22px" class="success-ripple" />
+                  <q-icon
+                    name="check_circle"
+                    size="22px"
+                    class="success-ripple"
+                  />
                   <span>ยืนยันตัวตนเรียบร้อย!</span>
                 </div>
               </template>
@@ -116,7 +122,11 @@
               <template v-else>
                 <div class="row items-center justify-center gap-xs">
                   <span>เข้าสู่ระบบ</span>
-                  <q-icon name="arrow_forward" size="18px" class="btn-arrow-icon" />
+                  <q-icon
+                    name="arrow_forward"
+                    size="18px"
+                    class="btn-arrow-icon"
+                  />
                 </div>
               </template>
             </q-btn>
@@ -157,7 +167,7 @@ async function handleLogin() {
   errorMessage.value = "";
   try {
     await authStore.login(email.value, password.value);
-    
+
     // Verification Stamp Burst Transition
     isSuccess.value = true;
     notify.success("เข้าสู่ระบบสำเร็จ");
@@ -190,7 +200,7 @@ async function handleLogin() {
   background-color: var(--neutral-surface);
   border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.35);
-  
+
   // Entrance Animation Sequence
   animation: cardRise 500ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
@@ -249,8 +259,12 @@ async function handleLogin() {
 }
 
 @keyframes ringRotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 // Staggered Entrance Animations
@@ -333,7 +347,10 @@ async function handleLogin() {
   height: 48px;
   border-radius: 8px;
   background: var(--brand-primary) !important;
-  transition: transform 150ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 150ms ease, background-color 300ms ease;
+  transition:
+    transform 150ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 150ms ease,
+    background-color 300ms ease;
 
   &:hover:not(:disabled) {
     transform: translateY(-2px);
@@ -365,8 +382,12 @@ async function handleLogin() {
 }
 
 @keyframes sealSpin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 // Soft Error Shake Motion
@@ -375,10 +396,23 @@ async function handleLogin() {
 }
 
 @keyframes softShake {
-  10.7%, 90% { transform: translate3d(-1px, 0, 0); }
-  21.4%, 78.5% { transform: translate3d(3px, 0, 0); }
-  32.1%, 53.5%, 64.2% { transform: translate3d(-5px, 0, 0); }
-  42.8%, 49.9% { transform: translate3d(5px, 0, 0); }
+  10.7%,
+  90% {
+    transform: translate3d(-1px, 0, 0);
+  }
+  21.4%,
+  78.5% {
+    transform: translate3d(3px, 0, 0);
+  }
+  32.1%,
+  53.5%,
+  64.2% {
+    transform: translate3d(-5px, 0, 0);
+  }
+  42.8%,
+  49.9% {
+    transform: translate3d(5px, 0, 0);
+  }
 }
 
 // Verification Stamp Burst State
@@ -391,9 +425,18 @@ async function handleLogin() {
 }
 
 @keyframes stampRipple {
-  0% { transform: scale(0.7); opacity: 0; }
-  50% { transform: scale(1.25); opacity: 1; }
-  100% { transform: scale(1); opacity: 1; }
+  0% {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.25);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 // Transition for Error Badge

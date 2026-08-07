@@ -18,10 +18,10 @@ export const useUserDirectoryStore = defineStore("user-directory", () => {
 
   /** All users as select options */
   const userOptions = computed(() =>
-    users.value.map((u) => ({
+    users.value.map(u => ({
       label: u.full_name,
-      value: u.id,
-    })),
+      value: u.id
+    }))
   );
 
   // ─── Actions ────────────────────────────────────────────────────────────────
@@ -57,19 +57,19 @@ export const useUserDirectoryStore = defineStore("user-directory", () => {
 
   /** Get users by department */
   function getUsersByDept(deptId: string): ProfileSummary[] {
-    return users.value.filter((u) => u.department_id === deptId);
+    return users.value.filter(u => u.department_id === deptId);
   }
 
   /** Search users by name (client-side filter) */
   function searchUsers(query: string): ProfileSummary[] {
     const q = query.toLowerCase().trim();
     if (!q) return users.value;
-    return users.value.filter((u) => u.full_name.toLowerCase().includes(q));
+    return users.value.filter(u => u.full_name.toLowerCase().includes(q));
   }
 
   /** Find user by ID */
   function getUserById(id: string): ProfileSummary | undefined {
-    return users.value.find((u) => u.id === id);
+    return users.value.find(u => u.id === id);
   }
 
   return {
@@ -84,6 +84,6 @@ export const useUserDirectoryStore = defineStore("user-directory", () => {
     reload,
     getUsersByDept,
     searchUsers,
-    getUserById,
+    getUserById
   };
 });

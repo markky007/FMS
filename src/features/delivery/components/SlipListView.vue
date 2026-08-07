@@ -3,13 +3,9 @@
     v-if="$q.screen.gt.sm"
     :slips="slips"
     :loading="loading"
-    @select="(s) => $emit('select', s)"
+    @select="s => $emit('select', s)"
   />
-  <SlipCardList
-    v-else
-    :slips="slips"
-    @select="(s) => $emit('select', s)"
-  />
+  <SlipCardList v-else :slips="slips" @select="s => $emit('select', s)" />
 </template>
 
 <script setup lang="ts">

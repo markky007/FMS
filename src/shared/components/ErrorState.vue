@@ -27,8 +27,8 @@ withDefaults(
   {
     title: "เกิดข้อผิดพลาด",
     message: "ไม่สามารถโหลดข้อมูลได้ กรุณาลองใหม่อีกครั้ง",
-    retryable: true,
-  },
+    retryable: true
+  }
 );
 
 defineEmits<{

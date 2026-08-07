@@ -11,7 +11,7 @@ withDefaults(
     message?: string;
   }>(),
   {
-    message: "กำลังโหลดข้อมูล...",
-  },
+    message: "กำลังโหลดข้อมูล..."
+  }
 );
 </script>

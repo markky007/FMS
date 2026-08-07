@@ -8,11 +8,13 @@
   >
     <q-card style="min-width: 380px; max-width: 600px">
       <!-- Header -->
-      <q-card-section class="bg-primary text-white row items-center justify-between q-pa-md">
+      <q-card-section
+        class="bg-primary text-white row items-center justify-between q-pa-md"
+      >
         <div class="row items-center">
           <q-icon name="gesture" size="24px" class="q-mr-sm" />
           <div class="text-subtitle1 text-weight-bold">
-            เซ็นรับเอกสาร {{ isBatch ? `(${items.length} รายการ)` : '' }}
+            เซ็นรับเอกสาร {{ isBatch ? `(${items.length} รายการ)` : "" }}
           </div>
         </div>
         <q-btn icon="close" flat round dense color="white" v-close-popup />
@@ -40,7 +42,8 @@
               เซ็นรับรายการเอกสารทั้งหมด {{ items.length }} รายการ
             </div>
             <div class="text-caption text-grey-7 q-mt-xs">
-              คำเตือน: ลายเซ็นนี้จะถูกใช้บันทึกการรับเอกสารทุกรายการด้านบนพร้อมกัน
+              คำเตือน:
+              ลายเซ็นนี้จะถูกใช้บันทึกการรับเอกสารทุกรายการด้านบนพร้อมกัน
             </div>
           </template>
         </div>
@@ -95,13 +98,15 @@ const isPadEmpty = ref(true);
 const submitting = ref(false);
 
 const isBatch = computed(() => props.items.length > 1);
-const singleItem = computed(() => (props.items.length === 1 ? props.items[0] : null));
+const singleItem = computed(() =>
+  props.items.length === 1 ? props.items[0] : null
+);
 
 const currentTimestamp = computed(() =>
   new Date().toLocaleString("th-TH", {
     dateStyle: "medium",
-    timeStyle: "short",
-  }),
+    timeStyle: "short"
+  })
 );
 
 function onDialogShow() {
@@ -124,7 +129,7 @@ async function handleConfirm() {
 
     onDialogOK({
       blob,
-      signerName: props.signerName,
+      signerName: props.signerName
     });
   } finally {
     submitting.value = false;

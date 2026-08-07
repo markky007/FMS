@@ -23,7 +23,7 @@ const supabaseAnonKey =
 
 if (!supabaseUrl || !supabaseAnonKey) {
   throw new Error(
-    "Missing Supabase environment variables. Check .env file (SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY)",
+    "Missing Supabase environment variables. Check .env file (SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY)"
   );
 }
 
@@ -35,9 +35,9 @@ export const supabase: SupabaseClient = createClient(
     auth: {
       autoRefreshToken: true,
       persistSession: true,
-      detectSessionInUrl: false,
-    },
-  },
+      detectSessionInUrl: false
+    }
+  }
 );
 
 export default defineBoot(({ app }) => {

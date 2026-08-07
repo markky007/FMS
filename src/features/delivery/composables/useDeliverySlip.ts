@@ -20,7 +20,7 @@ export function useDeliverySlip() {
 
   /** Create a new delivery slip in draft state */
   async function createSlip(
-    input: DeliverySlipCreateInput,
+    input: DeliverySlipCreateInput
   ): Promise<string | null> {
     if (!authStore.userId) {
       notify.error("กรุณาเข้าสู่ระบบก่อนทำรายการ");
@@ -34,12 +34,13 @@ export function useDeliverySlip() {
         to_department_id: input.to_department_id,
         delivered_by_name: input.delivered_by_name?.trim() || null,
         delivered_by_user_id: input.delivered_by_user_id || null,
-        send_date: input.send_date || new Date().toISOString().split("T")[0] || "",
+        send_date:
+          input.send_date || new Date().toISOString().split("T")[0] || "",
         send_time:
           input.send_time ||
           (new Date().toTimeString().split(" ")[0] || "00:00").substring(0, 5),
         status: input.status || SlipStatus.DRAFT,
-        created_by: authStore.userId,
+        created_by: authStore.userId
       };
 
       const { data, error } = await supabase
@@ -65,15 +66,19 @@ export function useDeliverySlip() {
   /** Update slip header info */
   async function updateSlipHeader(
     slipId: string,
-    input: Partial<DeliverySlipCreateInput>,
+    input: Partial<DeliverySlipCreateInput>
   ): Promise<boolean> {
     isSubmitting.value = true;
     try {
       const payload: Record<string, unknown> = {};
-      if (input.from_department_id) payload.from_department_id = input.from_department_id;
-      if (input.to_department_id) payload.to_department_id = input.to_department_id;
-      if (input.delivered_by_name !== undefined) payload.delivered_by_name = input.delivered_by_name;
-      if (input.delivered_by_user_id !== undefined) payload.delivered_by_user_id = input.delivered_by_user_id;
+      if (input.from_department_id)
+        payload.from_department_id = input.from_department_id;
+      if (input.to_department_id)
+        payload.to_department_id = input.to_department_id;
+      if (input.delivered_by_name !== undefined)
+        payload.delivered_by_name = input.delivered_by_name;
+      if (input.delivered_by_user_id !== undefined)
+        payload.delivered_by_user_id = input.delivered_by_user_id;
       if (input.send_date) payload.send_date = input.send_date;
 
       const { error } = await supabase
@@ -145,6 +150,6 @@ export function useDeliverySlip() {
     createSlip,
     updateSlipHeader,
     sendSlip,
-    voidSlip,
+    voidSlip
   };
 }

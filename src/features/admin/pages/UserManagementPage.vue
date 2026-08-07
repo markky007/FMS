@@ -73,12 +73,19 @@
         <template #body-cell-full_name="props">
           <q-td :props="props">
             <div class="row items-center no-wrap">
-              <q-avatar size="32px" color="primary" text-color="white" class="q-mr-sm">
+              <q-avatar
+                size="32px"
+                color="primary"
+                text-color="white"
+                class="q-mr-sm"
+              >
                 {{ props.row.full_name ? props.row.full_name.charAt(0) : "U" }}
               </q-avatar>
               <div>
                 <div class="text-weight-bold">{{ props.value }}</div>
-                <div class="text-caption text-grey-6">{{ props.row.email }}</div>
+                <div class="text-caption text-grey-6">{{
+                  props.row.email
+                }}</div>
               </div>
             </div>
           </q-td>
@@ -99,7 +106,10 @@
 
         <template #body-cell-department="props">
           <q-td :props="props">
-            <span v-if="props.row.department" class="text-weight-medium text-grey-9">
+            <span
+              v-if="props.row.department"
+              class="text-weight-medium text-grey-9"
+            >
               {{ props.row.department.code }} - {{ props.row.department.name }}
             </span>
             <span v-else class="text-grey-5">-</span>
@@ -109,7 +119,7 @@
         <template #body-cell-is_active="props">
           <q-td :props="props">
             <q-badge :color="props.value ? 'positive' : 'grey'">
-              {{ props.value ? 'ปกติ' : 'ถูกระงับ' }}
+              {{ props.value ? "ปกติ" : "ถูกระงับ" }}
             </q-badge>
           </q-td>
         </template>
@@ -135,7 +145,7 @@
               @click="toggleStatus(props.row)"
             >
               <q-tooltip>
-                {{ props.row.is_active ? 'ระงับบัญชี' : 'เปิดใช้งานบัญชี' }}
+                {{ props.row.is_active ? "ระงับบัญชี" : "เปิดใช้งานบัญชี" }}
               </q-tooltip>
             </q-btn>
           </q-td>
@@ -148,7 +158,10 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
 import { useQuasar } from "quasar";
-import { useUserManagement, type UserFormInput } from "../composables/useUserManagement";
+import {
+  useUserManagement,
+  type UserFormInput
+} from "../composables/useUserManagement";
 import { useDepartmentStore } from "@/stores/department.store";
 import UserFormDialog from "../components/UserFormDialog.vue";
 import { UserRole, USER_ROLE_CONFIG } from "@/types/enums";
@@ -162,7 +175,7 @@ const {
   fetchAllUsers,
   createUser,
   updateUser,
-  toggleStatus,
+  toggleStatus
 } = useUserManagement();
 
 const search = ref("");
@@ -171,43 +184,76 @@ const departmentFilter = ref<string | null>(null);
 
 const roleFilterOptions = [
   { label: "ทั้งหมด", value: null },
-  { label: USER_ROLE_CONFIG[UserRole.EMPLOYEE].label, value: UserRole.EMPLOYEE },
+  {
+    label: USER_ROLE_CONFIG[UserRole.EMPLOYEE].label,
+    value: UserRole.EMPLOYEE
+  },
   { label: USER_ROLE_CONFIG[UserRole.MANAGER].label, value: UserRole.MANAGER },
-  { label: USER_ROLE_CONFIG[UserRole.ADMIN].label, value: UserRole.ADMIN },
+  { label: USER_ROLE_CONFIG[UserRole.ADMIN].label, value: UserRole.ADMIN }
 ];
 
 const departmentFilterOptions = computed(() => [
   { label: "ทั้งหมด", value: null },
-  ...departmentStore.departments.map((d) => ({
+  ...departmentStore.departments.map(d => ({
     label: `${d.code} - ${d.name}`,
-    value: d.id,
-  })),
+    value: d.id
+  }))
 ]);
 
 const filteredUsers = computed(() => {
   let list = allUsers.value;
   if (roleFilter.value) {
-    list = list.filter((u) => u.role === roleFilter.value);
+    list = list.filter(u => u.role === roleFilter.value);
   }
   if (departmentFilter.value) {
-    list = list.filter((u) => u.department_id === departmentFilter.value);
+    list = list.filter(u => u.department_id === departmentFilter.value);
   }
   if (search.value.trim()) {
     const q = search.value.toLowerCase().trim();
     list = list.filter(
-      (u) =>
-        u.full_name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q),
+      u =>
+        u.full_name.toLowerCase().includes(q) ||
+        u.email.toLowerCase().includes(q)
     );
   }
   return list;
 });
 
 const columns = [
-  { name: "full_name", label: "ชื่อ-นามสกุล / อีเมล", field: "full_name", sortable: true, align: "left" as const },
-  { name: "role", label: "สิทธิ์การใช้งาน", field: "role", sortable: true, align: "center" as const },
-  { name: "department", label: "สาขา / แผนก", field: "department", sortable: true, align: "left" as const },
-  { name: "is_active", label: "สถานะ", field: "is_active", sortable: true, align: "center" as const },
-  { name: "actions", label: "จัดการ", field: "actions", align: "right" as const },
+  {
+    name: "full_name",
+    label: "ชื่อ-นามสกุล / อีเมล",
+    field: "full_name",
+    sortable: true,
+    align: "left" as const
+  },
+  {
+    name: "role",
+    label: "สิทธิ์การใช้งาน",
+    field: "role",
+    sortable: true,
+    align: "center" as const
+  },
+  {
+    name: "department",
+    label: "สาขา / แผนก",
+    field: "department",
+    sortable: true,
+    align: "left" as const
+  },
+  {
+    name: "is_active",
+    label: "สถานะ",
+    field: "is_active",
+    sortable: true,
+    align: "center" as const
+  },
+  {
+    name: "actions",
+    label: "จัดการ",
+    field: "actions",
+    align: "right" as const
+  }
 ];
 
 function getRoleConfig(role: UserRole) {
@@ -218,8 +264,8 @@ function openCreateDialog() {
   $q.dialog({
     component: UserFormDialog,
     componentProps: {
-      departments: departmentStore.departments,
-    },
+      departments: departmentStore.departments
+    }
   }).onOk(async (data: UserFormInput) => {
     await createUser(data);
   });
@@ -230,17 +276,14 @@ function openEditDialog(user: Profile) {
     component: UserFormDialog,
     componentProps: {
       user,
-      departments: departmentStore.departments,
-    },
+      departments: departmentStore.departments
+    }
   }).onOk(async (data: UserFormInput) => {
     await updateUser(user.id, data);
   });
 }
 
 onMounted(async () => {
-  await Promise.all([
-    fetchAllUsers(),
-    departmentStore.fetchAll(),
-  ]);
+  await Promise.all([fetchAllUsers(), departmentStore.fetchAll()]);
 });
 </script>

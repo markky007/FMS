@@ -97,12 +97,21 @@
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
         <q-card-section class="text-center q-pa-md">
-          <div v-if="activeSigUrl" class="border-grey rounded-borders q-pa-sm bg-grey-1">
-            <q-img :src="activeSigUrl" style="max-height: 200px" fit="contain" />
+          <div
+            v-if="activeSigUrl"
+            class="border-grey rounded-borders q-pa-sm bg-grey-1"
+          >
+            <q-img
+              :src="activeSigUrl"
+              style="max-height: 200px"
+              fit="contain"
+            />
           </div>
           <q-spinner v-else color="primary" size="40px" />
           <div v-if="activeSig" class="text-caption text-grey-7 q-mt-sm">
-            ผู้เซ็น: {{ activeSig.signer_name }} ({{ formatDate(activeSig.signed_at) }})
+            ผู้เซ็น: {{ activeSig.signer_name }} ({{
+              formatDate(activeSig.signed_at)
+            }})
           </div>
         </q-card-section>
       </q-card>
@@ -129,28 +138,69 @@ const filteredHistory = computed(() => {
   if (!search.value.trim()) return receivedHistory.value;
   const q = search.value.toLowerCase().trim();
   return receivedHistory.value.filter(
-    (item) =>
+    item =>
       item.document_description.toLowerCase().includes(q) ||
       (item.delivery_slip?.slip_number || "").toLowerCase().includes(q) ||
-      item.sender_name.toLowerCase().includes(q),
+      item.sender_name.toLowerCase().includes(q)
   );
 });
 
 const columns = [
-  { name: "document_description", label: "รายการเอกสาร", field: "document_description", sortable: true, align: "left" as const },
-  { name: "slip_number", label: "เลขที่ใบส่ง", field: (r: DeliveryItem) => r.delivery_slip?.slip_number || "-", sortable: true, align: "left" as const },
-  { name: "sender_name", label: "ผู้ส่ง", field: "sender_name", sortable: true, align: "left" as const },
-  { name: "receiver_name", label: "ผู้รับ", field: "receiver_name", sortable: true, align: "left" as const },
-  { name: "quantity", label: "จำนวน", field: "quantity", sortable: true, align: "center" as const },
-  { name: "received_at", label: "วันเวลาที่รับ", field: "received_at", sortable: true, align: "center" as const },
-  { name: "signature", label: "ลายเซ็น", field: "signature", align: "center" as const },
+  {
+    name: "document_description",
+    label: "รายการเอกสาร",
+    field: "document_description",
+    sortable: true,
+    align: "left" as const
+  },
+  {
+    name: "slip_number",
+    label: "เลขที่ใบส่ง",
+    field: (r: DeliveryItem) => r.delivery_slip?.slip_number || "-",
+    sortable: true,
+    align: "left" as const
+  },
+  {
+    name: "sender_name",
+    label: "ผู้ส่ง",
+    field: "sender_name",
+    sortable: true,
+    align: "left" as const
+  },
+  {
+    name: "receiver_name",
+    label: "ผู้รับ",
+    field: "receiver_name",
+    sortable: true,
+    align: "left" as const
+  },
+  {
+    name: "quantity",
+    label: "จำนวน",
+    field: "quantity",
+    sortable: true,
+    align: "center" as const
+  },
+  {
+    name: "received_at",
+    label: "วันเวลาที่รับ",
+    field: "received_at",
+    sortable: true,
+    align: "center" as const
+  },
+  {
+    name: "signature",
+    label: "ลายเซ็น",
+    field: "signature",
+    align: "center" as const
+  }
 ];
 
 function formatDate(dt?: string | null): string {
   if (!dt) return "";
   return new Date(dt).toLocaleString("th-TH", {
     dateStyle: "short",
-    timeStyle: "short",
+    timeStyle: "short"
   });
 }
 
@@ -161,7 +211,7 @@ async function viewSignature(sig: Signature) {
 
   const url = await getSignedUrl(
     APP_CONFIG.STORAGE_BUCKETS.SIGNATURES,
-    sig.storage_path,
+    sig.storage_path
   );
   activeSigUrl.value = url;
 }

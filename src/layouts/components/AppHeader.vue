@@ -35,8 +35,8 @@ withDefaults(
     showMenuButton?: boolean;
   }>(),
   {
-    showMenuButton: true,
-  },
+    showMenuButton: true
+  }
 );
 
 defineEmits<{

@@ -14,7 +14,7 @@ export function useNotification() {
       message,
       position: "top",
       timeout: 3000,
-      icon: "check_circle",
+      icon: "check_circle"
     };
     if (caption) opts.caption = caption;
     $q.notify(opts);
@@ -26,7 +26,7 @@ export function useNotification() {
       message,
       position: "top",
       timeout: 5000,
-      icon: "error",
+      icon: "error"
     };
     if (caption) opts.caption = caption;
     $q.notify(opts);
@@ -38,7 +38,7 @@ export function useNotification() {
       message,
       position: "top",
       timeout: 4000,
-      icon: "warning",
+      icon: "warning"
     };
     if (caption) opts.caption = caption;
     $q.notify(opts);
@@ -50,7 +50,7 @@ export function useNotification() {
       message,
       position: "top",
       timeout: 3000,
-      icon: "info",
+      icon: "info"
     };
     if (caption) opts.caption = caption;
     $q.notify(opts);
@@ -60,6 +60,6 @@ export function useNotification() {
     success,
     error,
     warning,
-    info,
+    info
   };
 }

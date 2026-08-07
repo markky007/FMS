@@ -18,7 +18,7 @@
             outlined
             dense
             autofocus
-            :rules="[(val) => !!val || 'กรุณากรอกรหัส']"
+            :rules="[val => !!val || 'กรุณากรอกรหัส']"
           />
 
           <q-input
@@ -27,7 +27,7 @@
             hint="เช่น สาขา K4, แผนกบัญชี"
             outlined
             dense
-            :rules="[(val) => !!val || 'กรุณากรอกชื่อ']"
+            :rules="[val => !!val || 'กรุณากรอกชื่อ']"
           />
 
           <q-select
@@ -107,19 +107,19 @@ const form = ref<DepartmentFormInput>({
   type: props.department?.type || DepartmentType.BRANCH,
   parent_id: props.department?.parent_id || null,
   sort_order: props.department?.sort_order ?? 0,
-  is_active: props.department?.is_active ?? true,
+  is_active: props.department?.is_active ?? true
 });
 
 const typeOptions = [
   { label: "สาขา (Branch)", value: DepartmentType.BRANCH },
-  { label: "แผนก (Department)", value: DepartmentType.DEPARTMENT },
+  { label: "แผนก (Department)", value: DepartmentType.DEPARTMENT }
 ];
 
 const branchOptions = computed(() =>
-  props.branches.map((b) => ({
+  props.branches.map(b => ({
     label: `${b.code} - ${b.name}`,
-    value: b.id,
-  })),
+    value: b.id
+  }))
 );
 
 function handleSubmit() {

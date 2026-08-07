@@ -11,7 +11,11 @@
         </div>
       </div>
       <div class="row items-center q-gutter-sm">
-        <q-chip :color="roleConfig.color" text-color="white" class="text-weight-bold">
+        <q-chip
+          :color="roleConfig.color"
+          text-color="white"
+          class="text-weight-bold"
+        >
           {{ roleConfig.label }}
         </q-chip>
         <q-btn
@@ -77,10 +81,19 @@
       <q-card flat bordered class="bg-blue-1 border-blue">
         <q-card-section class="row items-center justify-between">
           <div class="row items-center">
-            <q-icon name="rocket_launch" color="primary" size="28px" class="q-mr-sm" />
+            <q-icon
+              name="rocket_launch"
+              color="primary"
+              size="28px"
+              class="q-mr-sm"
+            />
             <div>
-              <div class="text-subtitle1 text-weight-bold text-primary">ทางลัดการทำรายการ</div>
-              <div class="text-caption text-grey-7">เริ่มต้นสร้างใบส่งเอกสาร หรือรับเอกสารค้างรับได้ทันที</div>
+              <div class="text-subtitle1 text-weight-bold text-primary"
+                >ทางลัดการทำรายการ</div
+              >
+              <div class="text-caption text-grey-7"
+                >เริ่มต้นสร้างใบส่งเอกสาร หรือรับเอกสารค้างรับได้ทันที</div
+              >
             </div>
           </div>
           <div class="row q-gutter-sm">
@@ -114,7 +127,9 @@
       <div class="col-12 col-md-7">
         <q-card flat bordered class="bg-white full-height">
           <q-card-section class="row items-center justify-between">
-            <div class="text-subtitle1 text-weight-bold text-primary row items-center">
+            <div
+              class="text-subtitle1 text-weight-bold text-primary row items-center"
+            >
               <q-icon name="history" class="q-mr-xs" size="22px" />
               รายการใบส่งเอกสารล่าสุด
             </div>
@@ -126,7 +141,9 @@
               <SlipListView
                 :slips="recentSlips"
                 :loading="isLoading"
-                @select="(slip: DeliverySlip) => $router.push(`/delivery/${slip.id}`)"
+                @select="
+                  (slip: DeliverySlip) => $router.push(`/delivery/${slip.id}`)
+                "
               />
             </div>
             <EmptyState
@@ -164,12 +181,17 @@ useRealtimeSubscription({
   },
   onItemChange: () => {
     void refreshDashboard();
-  },
+  }
 });
 
 const roleConfig = computed(() => {
   if (!authStore.role) return { label: "", color: "grey" };
-  return USER_ROLE_CONFIG[authStore.role as UserRole] || { label: authStore.role, color: "grey" };
+  return (
+    USER_ROLE_CONFIG[authStore.role as UserRole] || {
+      label: authStore.role,
+      color: "grey"
+    }
+  );
 });
 
 onMounted(async () => {

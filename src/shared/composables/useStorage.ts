@@ -25,7 +25,7 @@ export function useStorage() {
   async function uploadFile(
     bucket: string,
     path: string,
-    file: File,
+    file: File
   ): Promise<string | null> {
     isUploading.value = true;
     try {
@@ -34,14 +34,17 @@ export function useStorage() {
         .from(bucket)
         .upload(targetPath, file, {
           cacheControl: "3600",
-          upsert: true,
+          upsert: true
         });
 
       if (error) throw new Error(error.message);
       return data.path;
     } catch (err) {
       let msg = err instanceof Error ? err.message : "ไม่สามารถอัปโหลดไฟล์ได้";
-      if (msg.includes("Bucket not found") || msg.includes("The resource was not found")) {
+      if (
+        msg.includes("Bucket not found") ||
+        msg.includes("The resource was not found")
+      ) {
         msg = `ไม่พบ Storage Bucket '${bucket}' ใน Supabase (กรุณาสร้าง Bucket ใน Supabase Storage)`;
       }
       notify.error(msg);
@@ -55,7 +58,7 @@ export function useStorage() {
   async function getSignedUrl(
     bucket: string,
     rawPath: string,
-    expirySeconds = APP_CONFIG.SIGNED_URL_EXPIRY,
+    expirySeconds = APP_CONFIG.SIGNED_URL_EXPIRY
   ): Promise<string | null> {
     const path = cleanPath(bucket, rawPath);
     try {
@@ -67,10 +70,14 @@ export function useStorage() {
         return data.signedUrl;
       }
       // Fallback to getPublicUrl if createSignedUrl fails or bucket is public
-      const { data: publicData } = supabase.storage.from(bucket).getPublicUrl(path);
+      const { data: publicData } = supabase.storage
+        .from(bucket)
+        .getPublicUrl(path);
       return publicData?.publicUrl || null;
     } catch {
-      const { data: publicData } = supabase.storage.from(bucket).getPublicUrl(path);
+      const { data: publicData } = supabase.storage
+        .from(bucket)
+        .getPublicUrl(path);
       return publicData?.publicUrl || null;
     }
   }
@@ -91,6 +98,6 @@ export function useStorage() {
     isUploading,
     uploadFile,
     getSignedUrl,
-    deleteFile,
+    deleteFile
   };
 }

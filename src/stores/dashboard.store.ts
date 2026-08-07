@@ -8,14 +8,18 @@ import { ref } from "vue";
 import { supabase } from "@/boot/supabase";
 import { getTodayString } from "@/shared/utils/date";
 import { SlipStatus } from "@/types/enums";
-import type { DashboardStats, DepartmentBreakdown, DeliverySlip } from "@/types/models";
+import type {
+  DashboardStats,
+  DepartmentBreakdown,
+  DeliverySlip
+} from "@/types/models";
 
 export const useDashboardStore = defineStore("dashboard", () => {
   const stats = ref<DashboardStats>({
     today_sent: 0,
     today_received: 0,
     pending_count: 0,
-    month_total: 0,
+    month_total: 0
   });
 
   const departmentBreakdown = ref<DepartmentBreakdown[]>([]);
@@ -57,7 +61,7 @@ export const useDashboardStore = defineStore("dashboard", () => {
         today_sent: todaySentCount || 0,
         today_received: todayReceivedCount || 0,
         pending_count: pendingCount || 0,
-        month_total: monthTotalCount || 0,
+        month_total: monthTotalCount || 0
       };
 
       // 5. Recent 5 slips
@@ -69,25 +73,32 @@ export const useDashboardStore = defineStore("dashboard", () => {
           from_department:departments!from_department_id(*),
           to_department:departments!to_department_id(*),
           items:delivery_items(id, is_received)
-        `,
+        `
         )
         .order("created_at", { ascending: false })
         .limit(5);
 
-      recentSlips.value = (recentData || []).map((s) => ({
+      recentSlips.value = (recentData || []).map(s => ({
         ...s,
-        item_count: s.items?.length || 0,
+        item_count: s.items?.length || 0
       })) as DeliverySlip[];
 
       // 6. Department breakdown
       const { data: deptData } = await supabase
         .from("delivery_slips")
-        .select("from_department:departments!from_department_id(id, code, name)");
+        .select(
+          "from_department:departments!from_department_id(id, code, name)"
+        );
 
       if (deptData) {
-        const counts: Record<string, { code: string; name: string; count: number }> = {};
+        const counts: Record<
+          string,
+          { code: string; name: string; count: number }
+        > = {};
 
-        for (const raw of deptData as unknown as { from_department: { id: string; code: string; name: string } | null }[]) {
+        for (const raw of deptData as unknown as {
+          from_department: { id: string; code: string; name: string } | null;
+        }[]) {
           const dept = raw.from_department;
           if (dept) {
             if (!counts[dept.id]) {
@@ -104,7 +115,7 @@ export const useDashboardStore = defineStore("dashboard", () => {
           department_id: id,
           department_code: val.code,
           department_name: val.name,
-          count: val.count,
+          count: val.count
         }));
       }
     } finally {
@@ -117,6 +128,6 @@ export const useDashboardStore = defineStore("dashboard", () => {
     departmentBreakdown,
     recentSlips,
     isLoading,
-    fetchDashboardData,
+    fetchDashboardData
   };
 });

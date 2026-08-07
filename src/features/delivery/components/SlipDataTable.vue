@@ -22,7 +22,12 @@
         <span class="text-weight-medium">
           {{ props.row.from_department?.code }}
         </span>
-        <q-icon name="arrow_forward" size="14px" color="grey-6" class="q-mx-xs" />
+        <q-icon
+          name="arrow_forward"
+          size="14px"
+          color="grey-6"
+          class="q-mx-xs"
+        />
         <span class="text-weight-medium">
           {{ props.row.to_department?.code }}
         </span>
@@ -70,12 +75,53 @@ function onRowClick(_evt: Event, row: DeliverySlip) {
 }
 
 const columns = [
-  { name: "slip_number", label: "เลขที่ใบส่ง", field: "slip_number", sortable: true, align: "left" as const },
-  { name: "route", label: "เส้นทาง (จาก → ถึง)", field: "route", align: "left" as const },
-  { name: "delivered_by", label: "ผู้จัดส่ง (Delivery by)", field: (r: DeliverySlip) => r.delivered_by_name || r.creator?.full_name || "-", sortable: true, align: "left" as const },
-  { name: "send_date", label: "วันที่ส่ง", field: "send_date", sortable: true, align: "center" as const },
-  { name: "item_count", label: "จำนวนรายการ", field: (r: DeliverySlip) => r.item_count || 0, sortable: true, align: "center" as const },
-  { name: "status", label: "สถานะ", field: "status", sortable: true, align: "center" as const },
-  { name: "actions", label: "จัดการ", field: "actions", align: "right" as const },
+  {
+    name: "slip_number",
+    label: "เลขที่ใบส่ง",
+    field: "slip_number",
+    sortable: true,
+    align: "left" as const
+  },
+  {
+    name: "route",
+    label: "เส้นทาง (จาก → ถึง)",
+    field: "route",
+    align: "left" as const
+  },
+  {
+    name: "delivered_by",
+    label: "ผู้จัดส่ง (Delivery by)",
+    field: (r: DeliverySlip) =>
+      r.delivered_by_name || r.creator?.full_name || "-",
+    sortable: true,
+    align: "left" as const
+  },
+  {
+    name: "send_date",
+    label: "วันที่ส่ง",
+    field: "send_date",
+    sortable: true,
+    align: "center" as const
+  },
+  {
+    name: "item_count",
+    label: "จำนวนรายการ",
+    field: (r: DeliverySlip) => r.item_count || 0,
+    sortable: true,
+    align: "center" as const
+  },
+  {
+    name: "status",
+    label: "สถานะ",
+    field: "status",
+    sortable: true,
+    align: "center" as const
+  },
+  {
+    name: "actions",
+    label: "จัดการ",
+    field: "actions",
+    align: "right" as const
+  }
 ];
 </script>

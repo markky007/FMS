@@ -1,12 +1,16 @@
 <template>
   <div class="user-menu-wrapper">
-    <div class="user-card-pill cursor-pointer row items-center no-wrap q-px-sm q-py-xs">
+    <div
+      class="user-card-pill cursor-pointer row items-center no-wrap q-px-sm q-py-xs"
+    >
       <q-avatar size="32px" class="user-avatar text-weight-bold">
         {{ avatarText }}
       </q-avatar>
 
       <div class="user-info-text q-ml-sm q-mr-xs gt-xs">
-        <div class="user-name text-weight-bold text-caption text-white line-height-tight">
+        <div
+          class="user-name text-weight-bold text-caption text-white line-height-tight"
+        >
           {{ authStore.fullName || "ผู้ใช้งาน" }}
         </div>
         <div class="user-role text-caption text-blue-2 line-height-tight">
@@ -45,11 +49,18 @@
 
           <q-separator />
 
-          <q-item clickable v-ripple @click="handleLogout" class="text-negative q-py-sm">
+          <q-item
+            clickable
+            v-ripple
+            @click="handleLogout"
+            class="text-negative q-py-sm"
+          >
             <q-item-section avatar style="min-width: 32px">
               <q-icon name="logout" color="negative" size="20px" />
             </q-item-section>
-            <q-item-section class="text-weight-medium">ออกจากระบบ</q-item-section>
+            <q-item-section class="text-weight-medium"
+              >ออกจากระบบ</q-item-section
+            >
           </q-item>
         </q-list>
       </q-menu>

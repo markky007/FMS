@@ -16,6 +16,6 @@ export function useDashboard() {
     departmentBreakdown: dashboardStore.departmentBreakdown,
     recentSlips: dashboardStore.recentSlips,
     isLoading: dashboardStore.isLoading,
-    refreshDashboard,
+    refreshDashboard
   };
 }

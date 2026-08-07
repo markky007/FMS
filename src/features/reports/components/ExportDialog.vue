@@ -8,7 +8,9 @@
   >
     <q-card class="column bg-grey-3">
       <!-- Toolbar Header (Hidden when printing) -->
-      <q-card-section class="bg-primary text-white row items-center justify-between no-print q-pa-sm">
+      <q-card-section
+        class="bg-primary text-white row items-center justify-between no-print q-pa-sm"
+      >
         <div class="row items-center">
           <q-icon name="picture_as_pdf" size="24px" class="q-mr-sm" />
           <div class="text-subtitle1 text-weight-bold">
@@ -30,7 +32,9 @@
 
       <!-- Printable Slip Preview Area -->
       <q-card-section class="col overflow-auto flex flex-center q-pa-md">
-        <div class="printable-container shadow-6 rounded-borders bg-white full-width">
+        <div
+          class="printable-container shadow-6 rounded-borders bg-white full-width"
+        >
           <PrintableSlip :slip="slip" :items="items" />
         </div>
       </q-card-section>
@@ -40,7 +44,9 @@
 
 <script setup lang="ts">
 import { useDialogPluginComponent } from "quasar";
-import PrintableSlip, { type ItemWithSig } from "@/features/delivery/components/PrintableSlip.vue";
+import PrintableSlip, {
+  type ItemWithSig
+} from "@/features/delivery/components/PrintableSlip.vue";
 import type { DeliverySlip } from "@/types/models";
 
 defineProps<{
@@ -65,6 +71,16 @@ function handlePrint() {
 @media print {
   .no-print {
     display: none !important;
+  }
+  :deep(.q-card),
+  .q-card {
+    background: white !important;
+    box-shadow: none !important;
+  }
+  .printable-container {
+    max-width: 100% !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
   }
 }
 </style>

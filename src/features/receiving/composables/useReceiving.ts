@@ -30,7 +30,7 @@ export function useReceiving() {
       .eq("to_department_id", authStore.departmentId)
       .in("status", ["sent", "partially_received"]);
 
-    return (data || []).map((s) => s.id);
+    return (data || []).map(s => s.id);
   }
 
   /** Fetch items pending signature for current user or user's destination department */
@@ -57,14 +57,14 @@ export function useReceiving() {
             to_department:departments!to_department_id(*)
           ),
           attachments:item_attachments(*)
-        `,
+        `
         )
         .eq("is_received", false)
         .order("created_at", { ascending: false });
 
       if (incomingSlipIds.length > 0) {
         query = query.or(
-          `receiver_user_id.eq.${authStore.userId},delivery_slip_id.in.(${incomingSlipIds.join(",")})`,
+          `receiver_user_id.eq.${authStore.userId},delivery_slip_id.in.(${incomingSlipIds.join(",")})`
         );
       } else {
         query = query.eq("receiver_user_id", authStore.userId);
@@ -76,12 +76,13 @@ export function useReceiving() {
       const items = (data || []) as DeliveryItem[];
 
       // Filter out items that are draft or voided or not sent yet
-      pendingItems.value = items.filter((item) => {
+      pendingItems.value = items.filter(item => {
         const slipStatus = item.delivery_slip?.status;
         return slipStatus === "sent" || slipStatus === "partially_received";
       });
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "ไม่สามารถโหลดรายการรอรับได้";
+      const msg =
+        err instanceof Error ? err.message : "ไม่สามารถโหลดรายการรอรับได้";
       notify.error(msg);
     } finally {
       isLoading.value = false;
@@ -111,18 +112,18 @@ export function useReceiving() {
           ),
           signature:signatures!signature_id(*),
           attachments:item_attachments(*)
-        `,
+        `
         )
         .eq("is_received", true)
         .order("received_at", { ascending: false });
 
       if (incomingSlipIds.length > 0) {
         query = query.or(
-          `received_by_user_id.eq.${authStore.userId},receiver_user_id.eq.${authStore.userId},delivery_slip_id.in.(${incomingSlipIds.join(",")})`,
+          `received_by_user_id.eq.${authStore.userId},receiver_user_id.eq.${authStore.userId},delivery_slip_id.in.(${incomingSlipIds.join(",")})`
         );
       } else {
         query = query.or(
-          `received_by_user_id.eq.${authStore.userId},receiver_user_id.eq.${authStore.userId}`,
+          `received_by_user_id.eq.${authStore.userId},receiver_user_id.eq.${authStore.userId}`
         );
       }
 
@@ -131,7 +132,8 @@ export function useReceiving() {
 
       receivedHistory.value = (data || []) as DeliveryItem[];
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "ไม่สามารถโหลดประวัติการรับได้";
+      const msg =
+        err instanceof Error ? err.message : "ไม่สามารถโหลดประวัติการรับได้";
       notify.error(msg);
     } finally {
       isLoading.value = false;
@@ -142,7 +144,7 @@ export function useReceiving() {
   async function signItem(
     item: DeliveryItem,
     signatureBlob: Blob,
-    signerName: string,
+    signerName: string
   ): Promise<boolean> {
     if (!authStore.userId) {
       notify.error("กรุณาเข้าสู่ระบบก่อนทำรายการ");
@@ -158,7 +160,7 @@ export function useReceiving() {
       const storagePath = await uploadFile(
         APP_CONFIG.STORAGE_BUCKETS.SIGNATURES,
         fileName,
-        file,
+        file
       );
       if (!storagePath) throw new Error("อัปโหลดลายเซ็นไม่สำเร็จ");
 
@@ -166,7 +168,7 @@ export function useReceiving() {
       const { error: rpcErr } = await supabase.rpc("sign_delivery_item", {
         p_item_id: item.id,
         p_signature_storage_path: storagePath,
-        p_signer_name: signerName,
+        p_signer_name: signerName
       });
 
       if (rpcErr) {
@@ -177,7 +179,7 @@ export function useReceiving() {
             delivery_item_id: item.id,
             storage_path: storagePath,
             signer_name: signerName,
-            signer_user_id: authStore.userId,
+            signer_user_id: authStore.userId
           })
           .select()
           .single();
@@ -190,11 +192,12 @@ export function useReceiving() {
             is_received: true,
             received_at: new Date().toISOString(),
             received_by_user_id: authStore.userId,
-            signature_id: sigData.id,
+            signature_id: sigData.id
           })
           .eq("id", item.id);
 
-        if (updateErr) throw new Error(`อัปเดตสถานะไม่สำเร็จ: ${updateErr.message}`);
+        if (updateErr)
+          throw new Error(`อัปเดตสถานะไม่สำเร็จ: ${updateErr.message}`);
       }
 
       notify.success("เซ็นรับเอกสารเรียบร้อยแล้ว");
@@ -213,7 +216,7 @@ export function useReceiving() {
   async function batchSignItems(
     items: DeliveryItem[],
     signatureBlob: Blob,
-    signerName: string,
+    signerName: string
   ): Promise<boolean> {
     if (items.length === 0) return false;
 
@@ -238,6 +241,6 @@ export function useReceiving() {
     fetchPendingItems,
     fetchReceivedHistory,
     signItem,
-    batchSignItems,
+    batchSignItems
   };
 }

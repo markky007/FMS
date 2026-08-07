@@ -1,7 +1,9 @@
 <template>
   <q-card flat bordered class="bg-blue-1 border-primary">
     <q-card-section class="q-pa-md">
-      <div class="text-subtitle2 text-weight-bold text-primary q-mb-sm row items-center">
+      <div
+        class="text-subtitle2 text-weight-bold text-primary q-mb-sm row items-center"
+      >
         <q-icon name="playlist_add" class="q-mr-xs" size="20px" />
         เพิ่มรายการเอกสาร (ลำดับที่ {{ nextItemNumber }})
       </div>
@@ -18,7 +20,7 @@
               dense
               bg-color="white"
               placeholder="เช่น ใบแจ้งหนี้, ใบเสร็จ, Report Driver"
-              :rules="[(val) => !!val || 'กรุณากรอกรายละเอียดเอกสาร']"
+              :rules="[val => !!val || 'กรุณากรอกรายละเอียดเอกสาร']"
               @keydown.enter.prevent="focusNext('receiver')"
             />
           </div>
@@ -51,7 +53,7 @@
               dense
               bg-color="white"
               min="1"
-              :rules="[(val) => val > 0 || 'จำนวน > 0']"
+              :rules="[val => val > 0 || 'จำนวน > 0']"
             />
           </div>
         </div>
@@ -65,7 +67,7 @@
               outlined
               dense
               bg-color="white"
-              :rules="[(val) => !!val || 'กรุณากรอกชื่อผู้ส่ง']"
+              :rules="[val => !!val || 'กรุณากรอกชื่อผู้ส่ง']"
             />
           </div>
 
@@ -112,7 +114,7 @@ const emit = defineEmits<{
       sender_user_id?: string | undefined;
       quantity: number;
       files: File[];
-    },
+    }
   ): void;
 }>();
 
@@ -128,17 +130,17 @@ const form = ref({
   receiver_user_id: undefined as string | undefined,
   sender_name: authStore.fullName || "",
   sender_user_id: authStore.userId || undefined,
-  quantity: 1,
+  quantity: 1
 });
 
 const selectedReceiver = ref<string | { label: string; value: string }>("");
 const filteredUsers = ref(userDirectoryStore.users);
 
 const receiverOptions = computed(() =>
-  filteredUsers.value.map((u) => ({
+  filteredUsers.value.map(u => ({
     label: u.full_name,
-    value: u.id,
-  })),
+    value: u.id
+  }))
 );
 
 function filterReceivers(val: string, update: (fn: () => void) => void) {
@@ -147,8 +149,8 @@ function filterReceivers(val: string, update: (fn: () => void) => void) {
       filteredUsers.value = userDirectoryStore.users;
     } else {
       const needle = val.toLowerCase();
-      filteredUsers.value = userDirectoryStore.users.filter((v) =>
-        v.full_name.toLowerCase().includes(needle),
+      filteredUsers.value = userDirectoryStore.users.filter(v =>
+        v.full_name.toLowerCase().includes(needle)
       );
     }
   });
@@ -160,7 +162,9 @@ function createReceiverValue(val: string, done: (val: string) => void) {
   done(val);
 }
 
-function onReceiverSelected(val: string | { label: string; value: string } | null) {
+function onReceiverSelected(
+  val: string | { label: string; value: string } | null
+) {
   if (typeof val === "object" && val !== null) {
     form.value.receiver_name = val.label;
     form.value.receiver_user_id = val.value;
@@ -177,7 +181,10 @@ function focusNext(target: string) {
 }
 
 function handleSubmit() {
-  if (!form.value.document_description.trim() || !form.value.receiver_name.trim()) {
+  if (
+    !form.value.document_description.trim() ||
+    !form.value.receiver_name.trim()
+  ) {
     return;
   }
 
@@ -188,7 +195,7 @@ function handleSubmit() {
     sender_name: form.value.sender_name || authStore.fullName || "",
     sender_user_id: authStore.userId || undefined,
     quantity: form.value.quantity,
-    files: pendingFiles.value,
+    files: pendingFiles.value
   });
 
   // Reset form for next item entry

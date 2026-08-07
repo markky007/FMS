@@ -1,5 +1,7 @@
 <template>
-  <div class="column items-center justify-center q-pa-xl text-grey-6 text-center">
+  <div
+    class="column items-center justify-center q-pa-xl text-grey-6 text-center"
+  >
     <q-icon :name="icon" size="64px" class="q-mb-md" />
     <div class="text-subtitle1 text-weight-medium">{{ title }}</div>
     <div v-if="description" class="text-caption text-grey-5 q-mt-xs">
@@ -21,7 +23,7 @@ withDefaults(
   {
     title: "ไม่พบข้อมูล",
     description: "",
-    icon: "inbox",
-  },
+    icon: "inbox"
+  }
 );
 </script>

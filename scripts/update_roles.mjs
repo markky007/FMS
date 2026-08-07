@@ -14,7 +14,8 @@ function getEnv(key) {
   }
 }
 
-const SUPABASE_URL = getEnv("SUPABASE_URL") || "https://dwqirgirtmkkbszpsbzi.supabase.co";
+const SUPABASE_URL =
+  getEnv("SUPABASE_URL") || "https://dwqirgirtmkkbszpsbzi.supabase.co";
 const SUPABASE_SERVICE_KEY = getEnv("SUPABASE_SECRET_KEY");
 
 if (!SUPABASE_SERVICE_KEY) {
@@ -23,7 +24,7 @@ if (!SUPABASE_SERVICE_KEY) {
 }
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY, {
-  auth: { autoRefreshToken: false, persistSession: false },
+  auth: { autoRefreshToken: false, persistSession: false }
 });
 
 async function main() {
@@ -46,7 +47,9 @@ async function main() {
   console.log("Updated receiver:", receiverData);
 
   // Print current profiles
-  const { data: allProfiles } = await supabase.from("profiles").select("email, full_name, role");
+  const { data: allProfiles } = await supabase
+    .from("profiles")
+    .select("email, full_name, role");
   console.log("\n📋 Current Profiles in DB:", allProfiles);
 }
 

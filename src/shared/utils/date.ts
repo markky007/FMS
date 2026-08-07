@@ -4,7 +4,7 @@
 
 export function formatDateThai(
   dateStr?: string | Date | null,
-  format: "short" | "medium" | "full" = "medium",
+  format: "short" | "medium" | "full" = "medium"
 ): string {
   if (!dateStr) return "-";
   const date = typeof dateStr === "string" ? new Date(dateStr) : dateStr;
@@ -14,7 +14,7 @@ export function formatDateThai(
     return date.toLocaleDateString("th-TH", {
       day: "numeric",
       month: "short",
-      year: "2-digit",
+      year: "2-digit"
     });
   }
 
@@ -23,14 +23,14 @@ export function formatDateThai(
       weekday: "long",
       day: "numeric",
       month: "long",
-      year: "numeric",
+      year: "numeric"
     });
   }
 
   return date.toLocaleDateString("th-TH", {
     day: "numeric",
     month: "short",
-    year: "numeric",
+    year: "numeric"
   });
 }
 
@@ -41,7 +41,7 @@ export function formatTimeThai(dateStr?: string | Date | null): string {
 
   return date.toLocaleTimeString("th-TH", {
     hour: "2-digit",
-    minute: "2-digit",
+    minute: "2-digit"
   });
 }
 
