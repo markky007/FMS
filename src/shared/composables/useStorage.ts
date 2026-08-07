@@ -12,6 +12,15 @@ export function useStorage() {
   const notify = useNotification();
   const isUploading = ref(false);
 
+  /** Helper: Strip bucket name prefix if path contains it to prevent duplicate path segments */
+  function cleanPath(bucket: string, path: string): string {
+    const prefix = `${bucket}/`;
+    if (path.startsWith(prefix)) {
+      return path.substring(prefix.length);
+    }
+    return path;
+  }
+
   /** Upload file to Supabase Storage bucket */
   async function uploadFile(
     bucket: string,
@@ -20,9 +29,10 @@ export function useStorage() {
   ): Promise<string | null> {
     isUploading.value = true;
     try {
+      const targetPath = cleanPath(bucket, path);
       const { data, error } = await supabase.storage
         .from(bucket)
-        .upload(path, file, {
+        .upload(targetPath, file, {
           cacheControl: "3600",
           upsert: true,
         });
@@ -44,9 +54,10 @@ export function useStorage() {
   /** Generate temporary Signed URL for private file access (with getPublicUrl fallback) */
   async function getSignedUrl(
     bucket: string,
-    path: string,
+    rawPath: string,
     expirySeconds = APP_CONFIG.SIGNED_URL_EXPIRY,
   ): Promise<string | null> {
+    const path = cleanPath(bucket, rawPath);
     try {
       const { data, error } = await supabase.storage
         .from(bucket)
@@ -65,7 +76,8 @@ export function useStorage() {
   }
 
   /** Delete file from storage bucket */
-  async function deleteFile(bucket: string, path: string): Promise<boolean> {
+  async function deleteFile(bucket: string, rawPath: string): Promise<boolean> {
+    const path = cleanPath(bucket, rawPath);
     try {
       const { error } = await supabase.storage.from(bucket).remove([path]);
       if (error) throw new Error(error.message);
