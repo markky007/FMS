@@ -5,12 +5,16 @@
     "source.fixAll.oxc": "always"
   },
   "oxc.fmt.configPath": "oxfmt.config.ts",
-  "editor.defaultFormatter": "oxc.oxc-vscode",
+  "editor.defaultFormatter": "Vue.volar",
   "editor.formatOnSave": true,
   "js/ts.tsdk.path": "node_modules/typescript/lib",
   "search.exclude": {
     "dist/": true,
     ".quasar/": true,
     "/quasar.config.js.temporary.*": true
-  }
+  },
+  "deno.enable": true,
+  "deno.enablePaths": [
+    "supabase/functions"
+  ]
 }
