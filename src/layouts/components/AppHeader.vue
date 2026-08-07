@@ -11,8 +11,8 @@
         @click="$emit('toggle-left-drawer')"
       />
 
-      <q-avatar square size="32px" class="q-mr-sm">
-        <q-icon name="description" size="28px" />
+      <q-avatar size="32px" class="q-mr-sm">
+        <img src="icons/favicon-128x128.png" alt="KCST Logo" />
       </q-avatar>
 
       <q-toolbar-title class="text-weight-bold text-subtitle1 text-md-h6">

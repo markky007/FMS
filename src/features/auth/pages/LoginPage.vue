@@ -14,8 +14,12 @@
       <q-card-section class="login-card-header text-white text-center q-pa-lg">
         <!-- Official Seal Badge Logo (Elastic Drop Spring) -->
         <div class="seal-logo-wrapper entrance-seal q-mx-auto q-mb-md">
-          <div class="seal-logo-inner flex flex-center">
-            <q-icon name="description" size="32px" color="white" />
+          <div class="seal-logo-inner flex flex-center overflow-hidden">
+            <img
+              src="icons/favicon-128x128.png"
+              alt="KCST Emblem"
+              style="width: 44px; height: 44px; border-radius: 50%; object-fit: contain;"
+            />
           </div>
           <div class="seal-gold-ring" />
         </div>
