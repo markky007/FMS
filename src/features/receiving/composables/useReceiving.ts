@@ -21,13 +21,15 @@ export function useReceiving() {
   const isLoading = ref(false);
   const isSigning = ref(false);
 
-  /** Fetch slip IDs where destination (To Department) is current user's department */
+  /** Fetch slip IDs where destination (To Department) is current user's department and status is sent/partially_received */
   async function getIncomingDepartmentSlipIds(): Promise<string[]> {
     if (!authStore.departmentId) return [];
     const { data } = await supabase
       .from("delivery_slips")
       .select("id")
-      .eq("to_department_id", authStore.departmentId);
+      .eq("to_department_id", authStore.departmentId)
+      .in("status", ["sent", "partially_received"]);
+
     return (data || []).map((s) => s.id);
   }
 
@@ -37,6 +39,8 @@ export function useReceiving() {
 
     isLoading.value = true;
     try {
+      const incomingSlipIds = await getIncomingDepartmentSlipIds();
+
       let query = supabase
         .from("delivery_items")
         .select(
@@ -58,23 +62,24 @@ export function useReceiving() {
         .eq("is_received", false)
         .order("created_at", { ascending: false });
 
-      // Admin can view all pending items; Manager and Staff view items sent to their department or assigned to them
-      if (!authStore.isAdmin) {
-        const incomingSlipIds = await getIncomingDepartmentSlipIds();
-
-        if (incomingSlipIds.length > 0) {
-          query = query.or(
-            `receiver_user_id.eq.${authStore.userId},delivery_slip_id.in.(${incomingSlipIds.join(",")})`,
-          );
-        } else {
-          query = query.eq("receiver_user_id", authStore.userId);
-        }
+      if (incomingSlipIds.length > 0) {
+        query = query.or(
+          `receiver_user_id.eq.${authStore.userId},delivery_slip_id.in.(${incomingSlipIds.join(",")})`,
+        );
+      } else {
+        query = query.eq("receiver_user_id", authStore.userId);
       }
 
       const { data, error } = await query;
       if (error) throw new Error(error.message);
 
-      pendingItems.value = (data || []) as DeliveryItem[];
+      const items = (data || []) as DeliveryItem[];
+
+      // Filter out items that are draft or voided or not sent yet
+      pendingItems.value = items.filter((item) => {
+        const slipStatus = item.delivery_slip?.status;
+        return slipStatus === "sent" || slipStatus === "partially_received";
+      });
     } catch (err) {
       const msg = err instanceof Error ? err.message : "ไม่สามารถโหลดรายการรอรับได้";
       notify.error(msg);
@@ -89,6 +94,8 @@ export function useReceiving() {
 
     isLoading.value = true;
     try {
+      const incomingSlipIds = await getIncomingDepartmentSlipIds();
+
       let query = supabase
         .from("delivery_items")
         .select(
@@ -109,18 +116,14 @@ export function useReceiving() {
         .eq("is_received", true)
         .order("received_at", { ascending: false });
 
-      if (!authStore.isAdmin) {
-        const incomingSlipIds = await getIncomingDepartmentSlipIds();
-
-        if (incomingSlipIds.length > 0) {
-          query = query.or(
-            `received_by_user_id.eq.${authStore.userId},receiver_user_id.eq.${authStore.userId},delivery_slip_id.in.(${incomingSlipIds.join(",")})`,
-          );
-        } else {
-          query = query.or(
-            `received_by_user_id.eq.${authStore.userId},receiver_user_id.eq.${authStore.userId}`,
-          );
-        }
+      if (incomingSlipIds.length > 0) {
+        query = query.or(
+          `received_by_user_id.eq.${authStore.userId},receiver_user_id.eq.${authStore.userId},delivery_slip_id.in.(${incomingSlipIds.join(",")})`,
+        );
+      } else {
+        query = query.or(
+          `received_by_user_id.eq.${authStore.userId},receiver_user_id.eq.${authStore.userId}`,
+        );
       }
 
       const { data, error } = await query;

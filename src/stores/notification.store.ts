@@ -17,13 +17,31 @@ export const useNotificationStore = defineStore("notification", () => {
     const authStore = useAuthStore();
     if (!authStore.userId) return;
 
-    // Count delivery items where receiver is current user and not yet received
-    const { count, error } = await supabase
+    // Get slips sent to current user's department
+    let incomingSlipIds: string[] = [];
+    if (authStore.departmentId) {
+      const { data } = await supabase
+        .from("delivery_slips")
+        .select("id")
+        .eq("to_department_id", authStore.departmentId)
+        .in("status", ["sent", "partially_received"]);
+      incomingSlipIds = (data || []).map((s) => s.id);
+    }
+
+    let query = supabase
       .from("delivery_items")
       .select("*", { count: "exact", head: true })
-      .eq("is_received", false)
-      .or(`receiver_user_id.eq.${authStore.userId}`);
+      .eq("is_received", false);
 
+    if (incomingSlipIds.length > 0) {
+      query = query.or(
+        `receiver_user_id.eq.${authStore.userId},delivery_slip_id.in.(${incomingSlipIds.join(",")})`,
+      );
+    } else {
+      query = query.eq("receiver_user_id", authStore.userId);
+    }
+
+    const { count, error } = await query;
     if (!error && count !== null) {
       pendingCount.value = count;
     }
