@@ -15,8 +15,8 @@ export default defineBoot(async ({ router }) => {
   // Setup auth state change listener
   authStore.setupAuthListener();
 
-  // Navigation guard: redirect to login if not authenticated
-  router.beforeEach((to, _from, next) => {
+  // Navigation guard: redirect to login if not authenticated (Vue Router 5 return value syntax)
+  router.beforeEach((to) => {
     const requiresAuth = to.matched.some(
       (record) => record.meta.requiresAuth !== false,
     );
@@ -25,17 +25,14 @@ export default defineBoot(async ({ router }) => {
     // Allow login page without auth
     if (to.path === "/login") {
       if (authStore.isAuthenticated) {
-        next("/home");
-        return;
+        return "/home";
       }
-      next();
-      return;
+      return true;
     }
 
     // Check authentication
     if (requiresAuth && !authStore.isAuthenticated) {
-      next("/login");
-      return;
+      return "/login";
     }
 
     // Check role-based access
@@ -44,17 +41,15 @@ export default defineBoot(async ({ router }) => {
       authStore.role &&
       !allowedRoles.includes(authStore.role)
     ) {
-      next("/home");
-      return;
+      return "/home";
     }
 
     // Check if user account is active
     if (authStore.profile && !authStore.profile.is_active) {
       authStore.logout();
-      next("/login");
-      return;
+      return "/login";
     }
 
-    next();
+    return true;
   });
 });
