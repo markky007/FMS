@@ -68,11 +68,11 @@ export interface DeliverySlip {
 export interface DeliverySlipCreateInput {
   from_department_id: string;
   to_department_id: string;
-  delivered_by_name?: string;
-  delivered_by_user_id?: string;
-  send_date?: string;
-  send_time?: string;
-  status?: SlipStatus;
+  delivered_by_name?: string | undefined;
+  delivered_by_user_id?: string | undefined;
+  send_date?: string | undefined;
+  send_time?: string | undefined;
+  status?: SlipStatus | undefined;
 }
 
 // ─── Delivery Item ──────────────────────────────────────────────────────────
@@ -94,19 +94,19 @@ export interface DeliveryItem {
   created_at: string;
   updated_at: string;
   // joined
-  attachments?: ItemAttachment[];
-  signature?: Signature;
+  attachments?: ItemAttachment[] | undefined;
+  signature?: Signature | undefined;
 }
 
 export interface DeliveryItemCreateInput {
   delivery_slip_id: string;
   item_number: number;
   receiver_name: string;
-  receiver_user_id?: string;
+  receiver_user_id?: string | undefined;
   sender_name: string;
-  sender_user_id?: string;
+  sender_user_id?: string | undefined;
   document_description: string;
-  quantity?: number;
+  quantity?: number | undefined;
 }
 
 // ─── Attachment ─────────────────────────────────────────────────────────────
