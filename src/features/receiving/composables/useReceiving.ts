@@ -21,8 +21,8 @@ export function useReceiving() {
   const isLoading = ref(false);
   const isSigning = ref(false);
 
-  /** Helper: Fetch slip IDs targeting current user's department */
-  async function getDepartmentSlipIds(): Promise<string[]> {
+  /** Fetch slip IDs where destination (To Department) is current user's department */
+  async function getIncomingDepartmentSlipIds(): Promise<string[]> {
     if (!authStore.departmentId) return [];
     const { data } = await supabase
       .from("delivery_slips")
@@ -31,14 +31,12 @@ export function useReceiving() {
     return (data || []).map((s) => s.id);
   }
 
-  /** Fetch items pending signature for current user or user's department */
+  /** Fetch items pending signature for current user or user's destination department */
   async function fetchPendingItems(): Promise<void> {
     if (!authStore.userId) return;
 
     isLoading.value = true;
     try {
-      const deptSlipIds = await getDepartmentSlipIds();
-
       let query = supabase
         .from("delivery_items")
         .select(
@@ -60,12 +58,17 @@ export function useReceiving() {
         .eq("is_received", false)
         .order("created_at", { ascending: false });
 
-      if (deptSlipIds.length > 0) {
-        query = query.or(
-          `receiver_user_id.eq.${authStore.userId},delivery_slip_id.in.(${deptSlipIds.join(",")})`,
-        );
-      } else {
-        query = query.eq("receiver_user_id", authStore.userId);
+      // Admin can view all pending items; Manager and Staff view items sent to their department or assigned to them
+      if (!authStore.isAdmin) {
+        const incomingSlipIds = await getIncomingDepartmentSlipIds();
+
+        if (incomingSlipIds.length > 0) {
+          query = query.or(
+            `receiver_user_id.eq.${authStore.userId},delivery_slip_id.in.(${incomingSlipIds.join(",")})`,
+          );
+        } else {
+          query = query.eq("receiver_user_id", authStore.userId);
+        }
       }
 
       const { data, error } = await query;
@@ -86,8 +89,6 @@ export function useReceiving() {
 
     isLoading.value = true;
     try {
-      const deptSlipIds = await getDepartmentSlipIds();
-
       let query = supabase
         .from("delivery_items")
         .select(
@@ -108,12 +109,18 @@ export function useReceiving() {
         .eq("is_received", true)
         .order("received_at", { ascending: false });
 
-      if (deptSlipIds.length > 0) {
-        query = query.or(
-          `received_by_user_id.eq.${authStore.userId},receiver_user_id.eq.${authStore.userId},delivery_slip_id.in.(${deptSlipIds.join(",")})`,
-        );
-      } else {
-        query = query.eq("received_by_user_id", authStore.userId);
+      if (!authStore.isAdmin) {
+        const incomingSlipIds = await getIncomingDepartmentSlipIds();
+
+        if (incomingSlipIds.length > 0) {
+          query = query.or(
+            `received_by_user_id.eq.${authStore.userId},receiver_user_id.eq.${authStore.userId},delivery_slip_id.in.(${incomingSlipIds.join(",")})`,
+          );
+        } else {
+          query = query.or(
+            `received_by_user_id.eq.${authStore.userId},receiver_user_id.eq.${authStore.userId}`,
+          );
+        }
       }
 
       const { data, error } = await query;
@@ -152,12 +159,11 @@ export function useReceiving() {
       );
       if (!storagePath) throw new Error("อัปโหลดลายเซ็นไม่สำเร็จ");
 
-      // 2. Call RPC to process signature atomically
+      // 2. Call RPC to process signature atomically with exact parameter names
       const { error: rpcErr } = await supabase.rpc("sign_delivery_item", {
         p_item_id: item.id,
-        p_signer_user_id: authStore.userId,
+        p_signature_storage_path: storagePath,
         p_signer_name: signerName,
-        p_storage_path: storagePath,
       });
 
       if (rpcErr) {
