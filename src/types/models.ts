@@ -94,6 +94,7 @@ export interface DeliveryItem {
   created_at: string;
   updated_at: string;
   // joined
+  delivery_slip?: DeliverySlip | undefined;
   attachments?: ItemAttachment[] | undefined;
   signature?: Signature | undefined;
 }
