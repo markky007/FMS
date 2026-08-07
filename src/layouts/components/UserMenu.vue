@@ -1,47 +1,60 @@
 <template>
-  <q-btn flat round dense>
-    <q-avatar size="32px" color="primary" text-color="white">
-      {{ avatarText }}
-    </q-avatar>
+  <div class="user-menu-wrapper">
+    <div class="user-card-pill cursor-pointer row items-center no-wrap q-px-sm q-py-xs">
+      <q-avatar size="32px" class="user-avatar text-weight-bold">
+        {{ avatarText }}
+      </q-avatar>
 
-    <q-menu auto-close style="min-width: 200px">
-      <q-list>
-        <q-item class="bg-grey-1">
-          <q-item-section avatar>
-            <q-avatar color="primary" text-color="white" size="36px">
-              {{ avatarText }}
-            </q-avatar>
-          </q-item-section>
-          <q-item-section>
-            <q-item-label class="text-weight-bold">
-              {{ authStore.fullName || "ผู้ใช้งาน" }}
-            </q-item-label>
-            <q-item-label caption>
-              {{ roleLabel }}
-            </q-item-label>
-          </q-item-section>
-        </q-item>
+      <div class="user-info-text q-ml-sm q-mr-xs gt-xs">
+        <div class="user-name text-weight-bold text-caption text-white line-height-tight">
+          {{ authStore.fullName || "ผู้ใช้งาน" }}
+        </div>
+        <div class="user-role text-caption text-blue-2 line-height-tight">
+          {{ roleLabel }}
+        </div>
+      </div>
 
-        <q-separator />
+      <q-icon name="expand_more" size="18px" class="text-blue-2 q-ml-xs" />
 
-        <q-item clickable v-ripple to="/profile">
-          <q-item-section avatar>
-            <q-icon name="person" />
-          </q-item-section>
-          <q-item-section>โปรไฟล์ / เปลี่ยนรหัสผ่าน</q-item-section>
-        </q-item>
+      <q-menu auto-close class="user-dropdown-menu" :offset="[0, 8]">
+        <q-list style="min-width: 230px">
+          <q-item class="bg-slate-50 q-py-md">
+            <q-item-section avatar>
+              <q-avatar size="42px" class="user-avatar text-weight-bold">
+                {{ avatarText }}
+              </q-avatar>
+            </q-item-section>
+            <q-item-section>
+              <q-item-label class="text-weight-bold text-subtitle2">
+                {{ authStore.fullName || "ผู้ใช้งาน" }}
+              </q-item-label>
+              <q-item-label caption class="text-grey-7">
+                {{ roleLabel }}
+              </q-item-label>
+            </q-item-section>
+          </q-item>
 
-        <q-separator />
+          <q-separator />
 
-        <q-item clickable v-ripple @click="handleLogout" class="text-negative">
-          <q-item-section avatar>
-            <q-icon name="logout" color="negative" />
-          </q-item-section>
-          <q-item-section>ออกจากระบบ</q-item-section>
-        </q-item>
-      </q-list>
-    </q-menu>
-  </q-btn>
+          <q-item clickable v-ripple to="/profile" class="q-py-sm">
+            <q-item-section avatar style="min-width: 32px">
+              <q-icon name="person_outline" color="primary" size="20px" />
+            </q-item-section>
+            <q-item-section>โปรไฟล์ / เปลี่ยนรหัสผ่าน</q-item-section>
+          </q-item>
+
+          <q-separator />
+
+          <q-item clickable v-ripple @click="handleLogout" class="text-negative q-py-sm">
+            <q-item-section avatar style="min-width: 32px">
+              <q-icon name="logout" color="negative" size="20px" />
+            </q-item-section>
+            <q-item-section class="text-weight-medium">ออกจากระบบ</q-item-section>
+          </q-item>
+        </q-list>
+      </q-menu>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -68,3 +81,40 @@ async function handleLogout() {
   await router.push("/login");
 }
 </script>
+
+<style scoped lang="scss">
+.user-card-pill {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 9999px;
+  transition: all 150ms ease;
+  user-select: none;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.22);
+    border-color: rgba(255, 255, 255, 0.35);
+  }
+}
+
+.user-avatar {
+  background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.line-height-tight {
+  line-height: 1.25;
+}
+
+.user-name {
+  max-width: 140px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-role {
+  font-size: 0.7rem;
+  opacity: 0.9;
+}
+</style>

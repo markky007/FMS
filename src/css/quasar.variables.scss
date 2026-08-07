@@ -12,14 +12,26 @@
 // to match your app's branding.
 // Tip: Use the "Theme Builder" on Quasar's documentation website.
 
-$primary: #1976d2;
-$secondary: #26a69a;
-$accent: #9c27b0;
+// KCST Document Delivery — Design Tokens & SCSS Overrides
+// --------------------------------------------------
 
-$dark: #1d1d1d;
-$dark-page: #121212;
+// Brand Primary & Accent Tokens
+$primary: #1b365d; // Deep Navy Slate (Institutional, Trustworthy)
+$secondary: #475569; // Slate 600 (Neutral Secondary)
+$accent: #d97706; // Warm Amber Gold (Attention / CTA)
 
-$positive: #21ba45;
-$negative: #c10015;
-$info: #31ccec;
-$warning: #f2c037;
+// Dark & Neutral Defaults
+$dark: #0f172a; // Slate 900
+$dark-page: #090d16; // Deep Slate Black
+
+// Semantic Status Colors (Harmonized)
+$positive: #059669; // Emerald 600 (Success)
+$negative: #dc2626; // Rose 600 (Error / Danger)
+$info: #2563eb; // Royal Blue 600 (Info)
+$warning: #d97706; // Amber 600 (Warning)
+
+// Border Radius & Layout Defaults
+$generic-border-radius: 8px;
+$button-border-radius: 6px;
+$button-padding: 8px 16px;
+

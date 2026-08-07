@@ -1,9 +1,11 @@
 <template>
-  <q-card class="login-card shadow-10 rounded-borders overflow-hidden">
-    <q-card-section class="bg-primary text-white text-center q-pa-lg">
-      <q-icon name="description" size="48px" class="q-mb-sm" />
-      <div class="text-h6 text-weight-bold">{{ APP_CONFIG.APP_NAME }}</div>
-      <div class="text-caption text-blue-2">
+  <q-card class="login-card overflow-hidden">
+    <q-card-section class="login-card-header text-white text-center q-pa-lg">
+      <div class="login-logo-container q-mx-auto q-mb-sm">
+        <q-icon name="description" size="36px" color="white" />
+      </div>
+      <div class="text-h6 text-weight-bold tracking-tight">{{ APP_CONFIG.APP_NAME }}</div>
+      <div class="text-caption text-blue-2 q-mt-xs">
         ระบบติดตามการรับส่งเอกสารภายในองค์กร
       </div>
     </q-card-section>
@@ -20,7 +22,7 @@
           :rules="[(val) => !!val || 'กรุณากรอกอีเมล']"
         >
           <template #prepend>
-            <q-icon name="email" />
+            <q-icon name="email" color="grey-6" />
           </template>
         </q-input>
 
@@ -33,7 +35,7 @@
           :rules="[(val) => !!val || 'กรุณากรอกรหัสผ่าน']"
         >
           <template #prepend>
-            <q-icon name="lock" />
+            <q-icon name="lock" color="grey-6" />
           </template>
           <template #append>
             <q-icon
@@ -44,7 +46,8 @@
           </template>
         </q-input>
 
-        <div v-if="errorMessage" class="text-negative text-caption text-center">
+        <div v-if="errorMessage" class="badge-soft badge-soft--danger text-caption full-width justify-center q-py-xs">
+          <q-icon name="error_outline" size="16px" class="q-mr-xs" />
           {{ errorMessage }}
         </div>
 
@@ -55,7 +58,7 @@
           unelevated
           block
           size="lg"
-          class="full-width q-mt-md"
+          class="full-width q-mt-md text-weight-medium"
           :loading="authStore.isLoading"
         />
       </q-form>
@@ -95,6 +98,24 @@ async function handleLogin() {
 <style scoped lang="scss">
 .login-card {
   width: 100%;
-  max-width: 400px;
+  max-width: 410px;
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--neutral-border);
+}
+
+.login-card-header {
+  background: linear-gradient(135deg, #1b365d 0%, #0f2341 100%);
+}
+
+.login-logo-container {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background-color: rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
 }
 </style>

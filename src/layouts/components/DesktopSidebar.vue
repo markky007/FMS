@@ -4,7 +4,7 @@
       เมนูหลัก
     </q-item-label>
 
-    <q-item clickable v-ripple to="/home" active-class="bg-blue-1 text-primary">
+    <q-item clickable v-ripple to="/home" active-class="sidebar-item-active">
       <q-item-section avatar>
         <q-icon name="dashboard" />
       </q-item-section>
@@ -16,7 +16,7 @@
         clickable
         v-ripple
         to="/delivery/create"
-        active-class="bg-blue-1 text-primary"
+        active-class="sidebar-item-active"
       >
         <q-item-section avatar>
           <q-icon name="post_add" color="positive" />
@@ -31,7 +31,7 @@
         v-ripple
         to="/delivery"
         exact
-        active-class="bg-blue-1 text-primary"
+        active-class="sidebar-item-active"
       >
         <q-item-section avatar>
           <q-icon name="outbox" />
@@ -44,7 +44,7 @@
         v-ripple
         to="/receiving"
         exact
-        active-class="bg-blue-1 text-primary"
+        active-class="sidebar-item-active"
       >
         <q-item-section avatar>
           <q-icon name="inbox" />
@@ -61,7 +61,7 @@
         clickable
         v-ripple
         to="/receiving/history"
-        active-class="bg-blue-1 text-primary"
+        active-class="sidebar-item-active"
       >
         <q-item-section avatar>
           <q-icon name="history" />
@@ -80,7 +80,7 @@
         clickable
         v-ripple
         to="/reports"
-        active-class="bg-blue-1 text-primary"
+        active-class="sidebar-item-active"
       >
         <q-item-section avatar>
           <q-icon name="assessment" />
@@ -99,7 +99,7 @@
         clickable
         v-ripple
         to="/admin/users"
-        active-class="bg-blue-1 text-primary"
+        active-class="sidebar-item-active"
       >
         <q-item-section avatar>
           <q-icon name="people" />
@@ -111,7 +111,7 @@
         clickable
         v-ripple
         to="/admin/departments"
-        active-class="bg-blue-1 text-primary"
+        active-class="sidebar-item-active"
       >
         <q-item-section avatar>
           <q-icon name="account_tree" />
