@@ -8,7 +8,7 @@ import { supabase } from "@/boot/supabase";
 import { useStorage } from "@/shared/composables/useStorage";
 import { useNotification } from "@/shared/composables/useNotification";
 import { APP_CONFIG } from "@/app.config";
-import type { DeliveryItem, DeliveryItemCreateInput } from "@/types/models";
+import type { DeliveryItem, DeliveryItemCreateInput, ItemAttachment } from "@/types/models";
 
 export function useDeliveryItems() {
   const { uploadFile, deleteFile } = useStorage();
@@ -45,7 +45,10 @@ export function useDeliveryItems() {
 
       // Handle attachments upload if any
       if (attachments.length > 0) {
-        await uploadItemAttachments(createdItem.id, input.delivery_slip_id, attachments);
+        const uploaded = await uploadItemAttachments(createdItem.id, input.delivery_slip_id, attachments);
+        createdItem.attachments = uploaded;
+      } else {
+        createdItem.attachments = [];
       }
 
       return createdItem;
@@ -63,12 +66,13 @@ export function useDeliveryItems() {
     itemId: string,
     slipId: string,
     files: File[],
-  ): Promise<void> {
+  ): Promise<ItemAttachment[]> {
     const validFiles = files.slice(0, APP_CONFIG.MAX_ATTACHMENTS_PER_ITEM);
+    const savedRecords: ItemAttachment[] = [];
 
     for (const file of validFiles) {
       if (file.size > APP_CONFIG.MAX_ATTACHMENT_SIZE) {
-        notify.warning(`ไฟล์ ${file.name} มีขนาดเกิน 5MB (ถูกข้าม)`);
+        notify.warning(`ไฟล์ ${file.name} มีขนาดเกิน 10MB (ถูกข้าม)`);
         continue;
       }
 
@@ -82,15 +86,27 @@ export function useDeliveryItems() {
       );
 
       if (uploadedPath) {
-        await supabase.from("item_attachments").insert({
-          delivery_item_id: itemId,
-          storage_path: uploadedPath,
-          file_name: file.name,
-          file_size: file.size,
-          mime_type: file.type || "image/jpeg",
-        });
+        const { data: attData, error: attErr } = await supabase
+          .from("item_attachments")
+          .insert({
+            delivery_item_id: itemId,
+            storage_path: uploadedPath,
+            file_name: file.name,
+            file_size: file.size,
+            mime_type: file.type || "application/octet-stream",
+          })
+          .select()
+          .single();
+
+        if (attErr) {
+          notify.error(`บันทึกไฟล์แนบ ${file.name} ลงฐานข้อมูลล้มเหลว: ${attErr.message}`);
+        } else if (attData) {
+          savedRecords.push(attData as ItemAttachment);
+        }
       }
     }
+
+    return savedRecords;
   }
 
   /** Delete item from slip */
