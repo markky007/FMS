@@ -102,7 +102,7 @@ export const useDeliverySlipStore = defineStore("delivery-slip", () => {
           items:delivery_items(
             *,
             attachments:item_attachments(*),
-            signature:signatures(*)
+            signature:signatures!signature_id(*)
           )
         `,
         )

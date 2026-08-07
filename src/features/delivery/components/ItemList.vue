@@ -29,7 +29,7 @@
               <q-icon name="check_circle" size="14px" class="q-mr-xs" />
               รับแล้วเมื่อ {{ formatDate(item.received_at) }}
             </div>
-            <div v-else-1 class="text-caption text-orange">
+            <div v-else class="text-caption text-orange">
               (เว้นว่างไว้ให้คนรับเซ็น)
             </div>
           </td>

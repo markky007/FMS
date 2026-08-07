@@ -36,7 +36,7 @@ serve(async (req) => {
         creator:profiles!created_by(id, full_name, email),
         items:delivery_items(
           *,
-          signature:signatures(*)
+          signature:signatures!signature_id(*)
         )
       `,
       )

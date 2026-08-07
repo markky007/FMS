@@ -88,7 +88,7 @@ export function useReceiving() {
             from_department:departments!from_department_id(*),
             to_department:departments!to_department_id(*)
           ),
-          signature:signatures(*),
+          signature:signatures!signature_id(*),
           attachments:item_attachments(*)
         `,
         )
