@@ -41,7 +41,7 @@ export function useStorage() {
     }
   }
 
-  /** Generate temporary Signed URL for private file access */
+  /** Generate temporary Signed URL for private file access (with getPublicUrl fallback) */
   async function getSignedUrl(
     bucket: string,
     path: string,
@@ -52,10 +52,15 @@ export function useStorage() {
         .from(bucket)
         .createSignedUrl(path, expirySeconds);
 
-      if (error) throw new Error(error.message);
-      return data.signedUrl;
+      if (!error && data?.signedUrl) {
+        return data.signedUrl;
+      }
+      // Fallback to getPublicUrl if createSignedUrl fails or bucket is public
+      const { data: publicData } = supabase.storage.from(bucket).getPublicUrl(path);
+      return publicData?.publicUrl || null;
     } catch {
-      return null;
+      const { data: publicData } = supabase.storage.from(bucket).getPublicUrl(path);
+      return publicData?.publicUrl || null;
     }
   }
 
