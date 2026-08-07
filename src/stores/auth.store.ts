@@ -156,11 +156,18 @@ export const useAuthStore = defineStore("auth", () => {
       if (signUpError) {
         if (
           authError?.message?.includes("Invalid login credentials") ||
-          signUpError.message?.includes("User already registered")
+          signUpError.message?.includes("User already registered") ||
+          signUpError.message?.includes("Invalid login credentials")
         ) {
-          throw new Error("อีเมลหรือรหัสผ่านไม่ถูกต้อง");
+          throw new Error("อีเมลหรือรหัสผ่านไม่ถูกต้อง (หากยังไม่มีบัญชี กรุณาสร้างบัญชีผ่าน Supabase Auth)");
         }
-        throw new Error(authError?.message || signUpError.message);
+        if (
+          authError?.message?.includes("Database error") ||
+          signUpError.message?.includes("Database error")
+        ) {
+          throw new Error("เกิดข้อผิดพลาดในการเชื่อมต่อฐานข้อมูล Supabase Auth กรุณารันสคริปต์ fix_auth_schema.sql ใน SQL Editor");
+        }
+        throw new Error(signUpError.message || authError?.message || "เข้าสู่ระบบไม่สำเร็จ");
       }
 
       if (signUpData.session && signUpData.user) {
