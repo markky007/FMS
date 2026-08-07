@@ -21,12 +21,24 @@ export function useReceiving() {
   const isLoading = ref(false);
   const isSigning = ref(false);
 
+  /** Helper: Fetch slip IDs targeting current user's department */
+  async function getDepartmentSlipIds(): Promise<string[]> {
+    if (!authStore.departmentId) return [];
+    const { data } = await supabase
+      .from("delivery_slips")
+      .select("id")
+      .eq("to_department_id", authStore.departmentId);
+    return (data || []).map((s) => s.id);
+  }
+
   /** Fetch items pending signature for current user or user's department */
   async function fetchPendingItems(): Promise<void> {
     if (!authStore.userId) return;
 
     isLoading.value = true;
     try {
+      const deptSlipIds = await getDepartmentSlipIds();
+
       let query = supabase
         .from("delivery_items")
         .select(
@@ -48,10 +60,9 @@ export function useReceiving() {
         .eq("is_received", false)
         .order("created_at", { ascending: false });
 
-      // Filter: Receiver is current user OR user's department is the target
-      if (authStore.departmentId) {
+      if (deptSlipIds.length > 0) {
         query = query.or(
-          `receiver_user_id.eq.${authStore.userId},delivery_slip.to_department_id.eq.${authStore.departmentId}`,
+          `receiver_user_id.eq.${authStore.userId},delivery_slip_id.in.(${deptSlipIds.join(",")})`,
         );
       } else {
         query = query.eq("receiver_user_id", authStore.userId);
@@ -75,6 +86,8 @@ export function useReceiving() {
 
     isLoading.value = true;
     try {
+      const deptSlipIds = await getDepartmentSlipIds();
+
       let query = supabase
         .from("delivery_items")
         .select(
@@ -95,9 +108,9 @@ export function useReceiving() {
         .eq("is_received", true)
         .order("received_at", { ascending: false });
 
-      if (authStore.departmentId) {
+      if (deptSlipIds.length > 0) {
         query = query.or(
-          `received_by_user_id.eq.${authStore.userId},receiver_user_id.eq.${authStore.userId},delivery_slip.to_department_id.eq.${authStore.departmentId}`,
+          `received_by_user_id.eq.${authStore.userId},receiver_user_id.eq.${authStore.userId},delivery_slip_id.in.(${deptSlipIds.join(",")})`,
         );
       } else {
         query = query.eq("received_by_user_id", authStore.userId);
@@ -121,48 +134,46 @@ export function useReceiving() {
     signatureBlob: Blob,
     signerName: string,
   ): Promise<boolean> {
-    if (!authStore.userId) return false;
+    if (!authStore.userId) {
+      notify.error("กรุณาเข้าสู่ระบบก่อนทำรายการ");
+      return false;
+    }
 
     isSigning.value = true;
     try {
-      // 1. Upload signature PNG to Storage
-      const file = new File([signatureBlob], `signature_${item.id}.png`, {
-        type: "image/png",
-      });
+      // 1. Upload signature image to Storage
+      const fileName = `sig_${item.id}_${Date.now()}.png`;
+      const file = new File([signatureBlob], fileName, { type: "image/png" });
 
-      const storagePath = `${item.delivery_slip_id}/${item.id}/signature.png`;
-
-      const uploadedPath = await uploadFile(
+      const storagePath = await uploadFile(
         APP_CONFIG.STORAGE_BUCKETS.SIGNATURES,
-        storagePath,
+        fileName,
         file,
       );
+      if (!storagePath) throw new Error("อัปโหลดลายเซ็นไม่สำเร็จ");
 
-      if (!uploadedPath) {
-        throw new Error("ไม่สามารถบันทึกไฟล์ลายเซ็นได้");
-      }
-
-      // 2. Try DB function `sign_delivery_item` RPC
-      const { error: rpcError } = await supabase.rpc("sign_delivery_item", {
+      // 2. Call RPC to process signature atomically
+      const { error: rpcErr } = await supabase.rpc("sign_delivery_item", {
         p_item_id: item.id,
-        p_signature_storage_path: uploadedPath,
+        p_signer_user_id: authStore.userId,
         p_signer_name: signerName,
+        p_storage_path: storagePath,
       });
 
-      if (rpcError) {
-        // Fallback: direct insert signature + update item if RPC not deployed yet
+      if (rpcErr) {
+        // Fallback: manual insert into signatures & update delivery_items
         const { data: sigData, error: sigErr } = await supabase
           .from("signatures")
           .insert({
             delivery_item_id: item.id,
-            storage_path: uploadedPath,
+            storage_path: storagePath,
             signer_name: signerName,
             signer_user_id: authStore.userId,
           })
           .select()
           .single();
 
-        if (sigErr) throw new Error(sigErr.message);
+        if (sigErr) throw new Error(`บันทึกลายเซ็นไม่สำเร็จ: ${sigErr.message}`);
 
         const { error: updateErr } = await supabase
           .from("delivery_items")
@@ -174,10 +185,10 @@ export function useReceiving() {
           })
           .eq("id", item.id);
 
-        if (updateErr) throw new Error(updateErr.message);
+        if (updateErr) throw new Error(`อัปเดตสถานะไม่สำเร็จ: ${updateErr.message}`);
       }
 
-      notify.success(`เซ็นรับเอกสาร '${item.document_description}' เรียบร้อยแล้ว`);
+      notify.success("เซ็นรับเอกสารเรียบร้อยแล้ว");
       await fetchPendingItems();
       return true;
     } catch (err) {
@@ -189,22 +200,22 @@ export function useReceiving() {
     }
   }
 
-  /** Batch sign multiple items using same signature */
+  /** Batch sign multiple items with single signature */
   async function batchSignItems(
-    itemsToSign: DeliveryItem[],
+    items: DeliveryItem[],
     signatureBlob: Blob,
     signerName: string,
   ): Promise<boolean> {
-    if (itemsToSign.length === 0) return false;
+    if (items.length === 0) return false;
 
     let successCount = 0;
-    for (const item of itemsToSign) {
+    for (const item of items) {
       const ok = await signItem(item, signatureBlob, signerName);
       if (ok) successCount++;
     }
 
     if (successCount > 0) {
-      notify.success(`เซ็นรับเอกสารสำเร็จ ${successCount} รายการ`);
+      notify.success(`เซ็นรับเอกสารสำเร็จ ${successCount}/${items.length} รายการ`);
       return true;
     }
     return false;
