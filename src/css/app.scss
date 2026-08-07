@@ -221,10 +221,22 @@ h1, h2, h3, h4, h5, h6,
 // -----------------------------------------------------------------
 // Component Overrides: Form Inputs (QInput, QSelect, QField)
 // -----------------------------------------------------------------
+// Override WebKit / Chrome Autofill background color box
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+  -webkit-text-fill-color: #0f172a !important;
+  box-shadow: 0 0 0 1000px #ffffff inset !important;
+  transition: background-color 50000s ease-in-out 0s !important;
+}
+
 .q-field--outlined {
   .q-field__control {
     border-radius: 8px;
     border-color: #cbd5e1;
+    background-color: #ffffff;
     transition: border-color 150ms ease, box-shadow 150ms ease;
   }
 
