@@ -37,6 +37,19 @@ export default defineConfig((/* ctx */) => {
         // node: 'node22'
       },
 
+      rawDefine: {
+        "process.env.VITE_SUPABASE_URL": JSON.stringify(
+          process.env.VITE_SUPABASE_URL ||
+            process.env.SUPABASE_URL ||
+            "https://dwqirgirtmkkbszpsbzi.supabase.co",
+        ),
+        "process.env.VITE_SUPABASE_ANON_KEY": JSON.stringify(
+          process.env.VITE_SUPABASE_ANON_KEY ||
+            process.env.SUPABASE_PUBLISHABLE_KEY ||
+            "sb_publishable_yT7iYDERfZdwJWhBYzVsNA_bOArsQNX",
+        ),
+      },
+
       typescript: {
         strict: true,
         vueShim: true

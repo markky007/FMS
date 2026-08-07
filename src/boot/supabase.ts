@@ -6,14 +6,24 @@
 import { defineBoot } from "#q-app";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
+// Primary fallback credentials if process env hasn't loaded yet in hot reload
+const DEFAULT_SUPABASE_URL = "https://dwqirgirtmkkbszpsbzi.supabase.co";
+const DEFAULT_SUPABASE_KEY = "sb_publishable_yT7iYDERfZdwJWhBYzVsNA_bOArsQNX";
+
 const supabaseUrl =
   (import.meta.env.VITE_SUPABASE_URL as string) ||
-  (import.meta.env.SUPABASE_URL as string);
+  (import.meta.env.SUPABASE_URL as string) ||
+  (process.env.VITE_SUPABASE_URL as string) ||
+  (process.env.SUPABASE_URL as string) ||
+  DEFAULT_SUPABASE_URL;
 
 const supabaseAnonKey =
   (import.meta.env.VITE_SUPABASE_ANON_KEY as string) ||
   (import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string) ||
-  (import.meta.env.SUPABASE_PUBLISHABLE_KEY as string);
+  (import.meta.env.SUPABASE_PUBLISHABLE_KEY as string) ||
+  (process.env.VITE_SUPABASE_ANON_KEY as string) ||
+  (process.env.SUPABASE_PUBLISHABLE_KEY as string) ||
+  DEFAULT_SUPABASE_KEY;
 
 if (!supabaseUrl || !supabaseAnonKey) {
   throw new Error(
