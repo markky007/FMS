@@ -18,7 +18,12 @@
             <img
               src="icons/favicon-128x128.png"
               alt="KCST Emblem"
-              style="width: 44px; height: 44px; border-radius: 50%; object-fit: contain;"
+              style="
+                width: 44px;
+                height: 44px;
+                border-radius: 50%;
+                object-fit: contain;
+              "
             />
           </div>
           <div class="seal-gold-ring" />

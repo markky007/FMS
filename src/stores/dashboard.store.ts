@@ -7,7 +7,6 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 import { supabase } from "@/boot/supabase";
 import { getTodayString } from "@/shared/utils/date";
-import { SlipStatus } from "@/types/enums";
 import type {
   DashboardStats,
   DepartmentBreakdown,

@@ -53,4 +53,4 @@ async function main() {
   console.log("\n📋 Current Profiles in DB:", allProfiles);
 }
 
-main();
+void main();

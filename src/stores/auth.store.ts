@@ -64,7 +64,7 @@ export const useAuthStore = defineStore("auth", () => {
     uid: string,
     emailHint?: string
   ): Promise<Profile> {
-    const { data, error: err } = await supabase
+    const { data } = await supabase
       .from("profiles")
       .select("*, department:departments(*)")
       .eq("id", uid)

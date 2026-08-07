@@ -1,3 +1,4 @@
+import "../deno.d.ts";
 // Follow Deno & Supabase Edge Function conventions
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.8";
 

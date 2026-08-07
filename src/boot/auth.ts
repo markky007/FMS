@@ -46,7 +46,7 @@ export default defineBoot(async ({ router }) => {
 
     // Check if user account is active
     if (authStore.profile && !authStore.profile.is_active) {
-      authStore.logout();
+      void authStore.logout();
       return "/login";
     }
 

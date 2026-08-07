@@ -7,7 +7,6 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 import { supabase } from "@/boot/supabase";
 import type { DeliverySlip, DeliveryItem, SlipFilters } from "@/types/models";
-import { SlipStatus } from "@/types/enums";
 import { useAuthStore } from "./auth.store";
 
 export const useDeliverySlipStore = defineStore("delivery-slip", () => {

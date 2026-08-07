@@ -60,4 +60,4 @@ async function main() {
   console.log("\n🎉 Storage Buckets setup completed!");
 }
 
-main();
+void main();
