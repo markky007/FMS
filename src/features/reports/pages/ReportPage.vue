@@ -197,7 +197,7 @@ import { useReport } from "../composables/useReport";
 import { useDepartmentStore } from "@/stores/department.store";
 import { useDeliverySlipStore } from "@/stores/delivery-slip.store";
 import StatusChip from "@/shared/components/StatusChip.vue";
-import ExportDialog from "./ExportDialog.vue";
+import ExportDialog from "../components/ExportDialog.vue";
 import { SlipStatus, SLIP_STATUS_CONFIG } from "@/types/enums";
 import type { DeliverySlip } from "@/types/models";
 
