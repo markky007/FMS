@@ -7,9 +7,9 @@
         clickable
         dense
         color="grey-3"
-        text-color="primary"
-        icon="image"
-        @click="openImage(att)"
+        :text-color="getChipColor(att)"
+        :icon="getChipIcon(att)"
+        @click="openAttachment(att)"
       >
         {{ att.file_name }}
       </q-chip>
@@ -58,15 +58,50 @@ const showDialog = ref(false);
 const activeUrl = ref<string | null>(null);
 const activeFileName = ref("");
 
-async function openImage(att: ItemAttachment) {
-  activeFileName.value = att.file_name;
-  activeUrl.value = null;
-  showDialog.value = true;
+function isImage(att: ItemAttachment): boolean {
+  if (att.mime_type && att.mime_type.startsWith("image/")) return true;
+  const name = att.file_name.toLowerCase();
+  return (
+    name.endsWith(".jpg") ||
+    name.endsWith(".jpeg") ||
+    name.endsWith(".png") ||
+    name.endsWith(".webp")
+  );
+}
 
+function getChipIcon(att: ItemAttachment): string {
+  const name = att.file_name.toLowerCase();
+  if (name.endsWith(".pdf")) return "picture_as_pdf";
+  if (name.endsWith(".doc") || name.endsWith(".docx")) return "description";
+  if (name.endsWith(".xls") || name.endsWith(".xlsx") || name.endsWith(".csv"))
+    return "table_chart";
+  return "image";
+}
+
+function getChipColor(att: ItemAttachment): string {
+  const name = att.file_name.toLowerCase();
+  if (name.endsWith(".pdf")) return "red-9";
+  if (name.endsWith(".doc") || name.endsWith(".docx")) return "blue-9";
+  if (name.endsWith(".xls") || name.endsWith(".xlsx") || name.endsWith(".csv"))
+    return "green-9";
+  return "primary";
+}
+
+async function openAttachment(att: ItemAttachment) {
   const url = await getSignedUrl(
     APP_CONFIG.STORAGE_BUCKETS.ATTACHMENTS,
     att.storage_path,
   );
-  activeUrl.value = url;
+
+  if (!url) return;
+
+  if (isImage(att)) {
+    activeFileName.value = att.file_name;
+    activeUrl.value = url;
+    showDialog.value = true;
+  } else {
+    // Open PDF / Word / Excel / CSV in new tab for viewing / download
+    window.open(url, "_blank");
+  }
 }
 </script>

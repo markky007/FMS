@@ -30,7 +30,10 @@ export function useStorage() {
       if (error) throw new Error(error.message);
       return data.path;
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "ไม่สามารถอัปโหลดไฟล์ได้";
+      let msg = err instanceof Error ? err.message : "ไม่สามารถอัปโหลดไฟล์ได้";
+      if (msg.includes("Bucket not found") || msg.includes("The resource was not found")) {
+        msg = `ไม่พบ Storage Bucket '${bucket}' ใน Supabase (กรุณาสร้าง Bucket ใน Supabase Storage)`;
+      }
       notify.error(msg);
       return null;
     } finally {
