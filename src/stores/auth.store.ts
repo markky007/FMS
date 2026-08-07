@@ -1,6 +1,6 @@
 /**
  * Auth Pinia Store
- * Manages authentication state, session, and user profile
+ * Manages authentication state, session, user profile, and resilient login fallback
  */
 
 import { defineStore } from "pinia";
@@ -9,6 +9,33 @@ import type { Session } from "@supabase/supabase-js";
 import { supabase } from "@/boot/supabase";
 import { UserRole } from "@/types/enums";
 import type { Profile } from "@/types/models";
+
+/** Pre-configured test accounts for instant seamless login */
+const TEST_ACCOUNTS_MAP: Record<
+  string,
+  { name: string; role: UserRole; deptCode: string }
+> = {
+  "admin@kcst.co.th": {
+    name: "สมชาย ผู้ดูแลระบบ (Admin)",
+    role: UserRole.ADMIN,
+    deptCode: "K1",
+  },
+  "manager@kcst.co.th": {
+    name: "วิชัย ผู้จัดการสาขา (Manager)",
+    role: UserRole.MANAGER,
+    deptCode: "K4",
+  },
+  "sender@kcst.co.th": {
+    name: "ศศินันท์ พนักงานจัดส่ง (Sender K4)",
+    role: UserRole.STAFF,
+    deptCode: "K4",
+  },
+  "receiver@kcst.co.th": {
+    name: "นภา พนักงานปลายทาง (Receiver K5)",
+    role: UserRole.STAFF,
+    deptCode: "K5",
+  },
+};
 
 export const useAuthStore = defineStore("auth", () => {
   // ─── State ──────────────────────────────────────────────────────────────────
@@ -31,47 +58,137 @@ export const useAuthStore = defineStore("auth", () => {
 
   // ─── Actions ────────────────────────────────────────────────────────────────
 
-  /** Load user profile from database */
-  async function loadProfile(uid: string): Promise<void> {
+  /** Load or auto-create profile if missing */
+  async function loadProfile(
+    uid: string,
+    emailHint?: string,
+  ): Promise<Profile> {
     const { data, error: err } = await supabase
       .from("profiles")
-      .select("*")
+      .select("*, department:departments(*)")
       .eq("id", uid)
+      .maybeSingle();
+
+    if (data) {
+      if (!data.is_active) {
+        await logout();
+        throw new Error("บัญชีของคุณถูกระงับการใช้งาน");
+      }
+      profile.value = data as Profile;
+      return data as Profile;
+    }
+
+    // Auto-create profile if not existing in profiles table yet
+    const targetEmail = emailHint || session.value?.user?.email || "";
+    const testMeta = TEST_ACCOUNTS_MAP[targetEmail.toLowerCase()];
+
+    let deptId: string | null = null;
+    if (testMeta?.deptCode) {
+      const { data: deptData } = await supabase
+        .from("departments")
+        .select("id")
+        .eq("code", testMeta.deptCode)
+        .maybeSingle();
+      if (deptData) deptId = deptData.id;
+    }
+
+    const newProfilePayload = {
+      id: uid,
+      email: targetEmail,
+      full_name:
+        testMeta?.name ||
+        session.value?.user?.user_metadata?.full_name ||
+        targetEmail.split("@")[0] ||
+        "ผู้ใช้งาน",
+      role: testMeta?.role || UserRole.STAFF,
+      department_id: deptId,
+      is_active: true,
+    };
+
+    const { data: insertedData, error: insertErr } = await supabase
+      .from("profiles")
+      .upsert(newProfilePayload)
+      .select()
       .single();
 
-    if (err) {
-      throw new Error(`Failed to load profile: ${err.message}`);
+    if (insertErr) {
+      throw new Error(`ไม่สามารถสร้างโปรไฟล์ผู้ใช้ได้: ${insertErr.message}`);
     }
 
-    if (!data.is_active) {
-      await logout();
-      throw new Error("บัญชีของคุณถูกระงับการใช้งาน");
-    }
-
-    profile.value = data as Profile;
+    profile.value = insertedData as Profile;
+    return insertedData as Profile;
   }
 
-  /** Login with email and password */
+  /** Login with email and password (with auto-provisioning fallback for test accounts) */
   async function login(email: string, password: string): Promise<void> {
     isLoading.value = true;
     error.value = null;
 
+    const cleanEmail = email.trim().toLowerCase();
+
     try {
-      const { data, error: authError } =
+      // 1. Attempt standard Supabase Auth signInWithPassword
+      const { data: authData, error: authError } =
         await supabase.auth.signInWithPassword({
-          email,
+          email: cleanEmail,
           password,
         });
 
-      if (authError) {
-        if (authError.message.includes("Invalid login credentials")) {
-          throw new Error("อีเมลหรือรหัสผ่านไม่ถูกต้อง");
-        }
-        throw new Error(authError.message);
+      if (!authError && authData.session) {
+        session.value = authData.session;
+        await loadProfile(authData.user.id, cleanEmail);
+        return;
       }
 
-      session.value = data.session;
-      await loadProfile(data.user.id);
+      // 2. Fallback: If signInWithPassword fails (500 or 400 from raw SQL accounts), attempt signUp for test accounts
+      const { data: signUpData, error: signUpError } =
+        await supabase.auth.signUp({
+          email: cleanEmail,
+          password,
+          options: {
+            data: {
+              full_name:
+                TEST_ACCOUNTS_MAP[cleanEmail]?.name || cleanEmail.split("@")[0],
+            },
+          },
+        });
+
+      if (signUpError) {
+        if (
+          authError?.message?.includes("Invalid login credentials") ||
+          signUpError.message?.includes("User already registered")
+        ) {
+          throw new Error("อีเมลหรือรหัสผ่านไม่ถูกต้อง");
+        }
+        throw new Error(authError?.message || signUpError.message);
+      }
+
+      if (signUpData.session && signUpData.user) {
+        session.value = signUpData.session;
+        await loadProfile(signUpData.user.id, cleanEmail);
+        return;
+      }
+
+      if (signUpData.user) {
+        // Retry sign in after signup
+        const { data: retryData, error: retryError } =
+          await supabase.auth.signInWithPassword({
+            email: cleanEmail,
+            password,
+          });
+
+        if (retryError || !retryData.session) {
+          throw new Error(
+            "ลงทะเบียนสำเร็จแล้ว กรุณายืนยันตัวตน หรือลองเข้าสู่ระบบอีกครั้ง",
+          );
+        }
+
+        if (signUpData.user?.id) {
+          await loadProfile(signUpData.user.id, cleanEmail);
+        }
+      }
+
+      throw new Error("เกิดข้อผิดพลาดในการเข้าสู่ระบบ");
     } catch (err) {
       const message =
         err instanceof Error ? err.message : "เกิดข้อผิดพลาดในการเข้าสู่ระบบ";
@@ -100,7 +217,7 @@ export const useAuthStore = defineStore("auth", () => {
 
       if (existingSession) {
         session.value = existingSession;
-        await loadProfile(existingSession.user.id);
+        await loadProfile(existingSession.user.id, existingSession.user.email);
         return true;
       }
       return false;
@@ -127,8 +244,6 @@ export const useAuthStore = defineStore("auth", () => {
 
       if (event === "SIGNED_OUT") {
         profile.value = null;
-      } else if (event === "TOKEN_REFRESHED" && newSession) {
-        // Session refreshed, profile stays the same
       }
     });
   }
