@@ -7,6 +7,11 @@
       <canvas
         ref="canvasRef"
         class="signature-canvas touch-none cursor-pointer"
+        @pointerdown="startDrawing"
+        @pointermove="draw"
+        @pointerup="stopDrawing"
+        @pointercancel="stopDrawing"
+        @pointerleave="stopDrawing"
         @mousedown="startDrawing"
         @mousemove="draw"
         @mouseup="stopDrawing"
@@ -18,7 +23,7 @@
 
       <div
         v-if="isEmpty"
-        class="placeholder-text absolute-center text-grey-5 pointer-events-none text-subtitle1"
+        class="placeholder-text absolute-center text-grey-5 pointer-events-none text-subtitle1 unselectable"
       >
         ✍️ วาดลายเซ็นที่นี่ (Touch / Mouse)
       </div>
@@ -42,7 +47,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, watch } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 
 const props = withDefaults(
   defineProps<{
@@ -51,7 +56,7 @@ const props = withDefaults(
     lineWidth?: number;
   }>(),
   {
-    penColor: "#000000",
+    penColor: "#0f172a",
     lineWidth: 3,
   },
 );
@@ -74,12 +79,22 @@ function initCanvas() {
   const canvas = canvasRef.value;
   const container = canvasContainerRef.value;
 
-  // Handle high DPR for crisp signature lines
-  const dpr = window.devicePixelRatio || 1;
   const rect = container.getBoundingClientRect();
+  const width = Math.floor(rect.width) || 400;
+  const height = Math.floor(rect.height) || 220;
 
-  canvas.width = rect.width * dpr;
-  canvas.height = Math.max(rect.height, 220) * dpr;
+  // Retry if container width is not yet rendered in dialog animation
+  if (width === 0 || height === 0) {
+    requestAnimationFrame(initCanvas);
+    return;
+  }
+
+  const dpr = window.devicePixelRatio || 1;
+
+  canvas.width = width * dpr;
+  canvas.height = height * dpr;
+  canvas.style.width = `${width}px`;
+  canvas.style.height = `${height}px`;
 
   ctx = canvas.getContext("2d");
   if (ctx) {
@@ -91,7 +106,7 @@ function initCanvas() {
   }
 }
 
-function getPos(evt: MouseEvent): { x: number; y: number } {
+function getPoint(evt: MouseEvent | PointerEvent): { x: number; y: number } {
   if (!canvasRef.value) return { x: 0, y: 0 };
   const rect = canvasRef.value.getBoundingClientRect();
   return {
@@ -100,7 +115,7 @@ function getPos(evt: MouseEvent): { x: number; y: number } {
   };
 }
 
-function getTouchPos(evt: TouchEvent): { x: number; y: number } {
+function getTouchPoint(evt: TouchEvent): { x: number; y: number } {
   if (!canvasRef.value || !evt.touches[0]) return { x: 0, y: 0 };
   const rect = canvasRef.value.getBoundingClientRect();
   const touch = evt.touches[0];
@@ -110,18 +125,21 @@ function getTouchPos(evt: TouchEvent): { x: number; y: number } {
   };
 }
 
-function startDrawing(evt: MouseEvent) {
+function startDrawing(evt: MouseEvent | PointerEvent) {
+  evt.preventDefault();
   isDrawing.value = true;
-  const pos = getPos(evt);
+  const pt = getPoint(evt);
   ctx?.beginPath();
-  ctx?.moveTo(pos.x, pos.y);
+  ctx?.moveTo(pt.x, pt.y);
 }
 
-function draw(evt: MouseEvent) {
+function draw(evt: MouseEvent | PointerEvent) {
   if (!isDrawing.value || !ctx) return;
-  const pos = getPos(evt);
-  ctx.lineTo(pos.x, pos.y);
+  evt.preventDefault();
+  const pt = getPoint(evt);
+  ctx.lineTo(pt.x, pt.y);
   ctx.stroke();
+
   if (isEmpty.value) {
     isEmpty.value = false;
     emit("change", false);
@@ -130,16 +148,17 @@ function draw(evt: MouseEvent) {
 
 function handleTouchStart(evt: TouchEvent) {
   isDrawing.value = true;
-  const pos = getTouchPos(evt);
+  const pt = getTouchPoint(evt);
   ctx?.beginPath();
-  ctx?.moveTo(pos.x, pos.y);
+  ctx?.moveTo(pt.x, pt.y);
 }
 
 function handleTouchMove(evt: TouchEvent) {
   if (!isDrawing.value || !ctx) return;
-  const pos = getTouchPos(evt);
-  ctx.lineTo(pos.x, pos.y);
+  const pt = getTouchPoint(evt);
+  ctx.lineTo(pt.x, pt.y);
   ctx.stroke();
+
   if (isEmpty.value) {
     isEmpty.value = false;
     emit("change", false);
@@ -175,10 +194,12 @@ function toBlob(): Promise<Blob | null> {
 }
 
 onMounted(() => {
-  initCanvas();
+  setTimeout(() => {
+    initCanvas();
+  }, 100);
+
   if (canvasContainerRef.value) {
     resizeObserver = new ResizeObserver(() => {
-      // Re-init canvas on window resize if empty
       if (isEmpty.value) {
         initCanvas();
       }
@@ -194,6 +215,7 @@ onUnmounted(() => {
 });
 
 defineExpose({
+  initCanvas,
   clear,
   toBlob,
   isEmpty,
@@ -210,9 +232,16 @@ defineExpose({
   width: 100%;
   height: 100%;
   touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .pointer-events-none {
   pointer-events: none;
+}
+
+.unselectable {
+  user-select: none;
+  -webkit-user-select: none;
 }
 </style>

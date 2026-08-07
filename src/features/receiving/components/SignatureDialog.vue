@@ -3,6 +3,7 @@
     ref="dialogRef"
     :fullscreen="$q.screen.lt.md"
     persistent
+    @show="onDialogShow"
     @hide="onDialogHide"
   >
     <q-card style="min-width: 380px; max-width: 600px">
@@ -102,6 +103,12 @@ const currentTimestamp = computed(() =>
     timeStyle: "short",
   }),
 );
+
+function onDialogShow() {
+  setTimeout(() => {
+    sigPadRef.value?.initCanvas();
+  }, 50);
+}
 
 function onPadChange(empty: boolean) {
   isPadEmpty.value = empty;
